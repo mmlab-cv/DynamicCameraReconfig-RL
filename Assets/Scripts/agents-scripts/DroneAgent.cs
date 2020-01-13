@@ -317,7 +317,7 @@ public class DroneAgent : Agent
 
     private void WaitTimeInference()
     {
-        if (!m_Academy.GetIsInference())
+        if (training)
         {
             RequestDecision();
         }
