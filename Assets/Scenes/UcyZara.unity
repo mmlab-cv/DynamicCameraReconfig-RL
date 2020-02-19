@@ -4675,16 +4675,6 @@ PrefabInstance:
       propertyPath: rt
       value: 
       objectReference: {fileID: 8600000, guid: f6d1ced42ba78464889cd9b84287a45d, type: 2}
-    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
-        type: 3}
-      propertyPath: timeBetweenDecisionsAtInference
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
-        type: 3}
-      propertyPath: m_Model
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2500447232498672916, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: renderTexture
@@ -7015,6 +7005,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: drone (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 20213456121506806, guid: d216bb91edc64412987986d3a508227b,
+        type: 3}
+      propertyPath: m_TargetDisplay
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 20213456121506806, guid: d216bb91edc64412987986d3a508227b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4977196860686940, guid: d216bb91edc64412987986d3a508227b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.7
@@ -7048,16 +7048,6 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2017233233, guid: d216bb91edc64412987986d3a508227b, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 20213456121506806, guid: d216bb91edc64412987986d3a508227b,
-        type: 3}
-      propertyPath: m_TargetDisplay
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 20213456121506806, guid: d216bb91edc64412987986d3a508227b,
-        type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -8588,12 +8578,12 @@ PrefabInstance:
     - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: timeBetweenDecisionsAtInference
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
-      propertyPath: m_Model
-      value: 
+      propertyPath: maxStepsCode
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}

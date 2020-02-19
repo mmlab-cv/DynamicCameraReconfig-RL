@@ -204,7 +204,7 @@ public class DroneAgent : Agent
         }
 
         if (logReward)
-            Debug.Log("Agent step " + GetStepCount() + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
+            Debug.Log("Agent step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
 
         lastGCM = gcm;
         _gridController.currentTime++;

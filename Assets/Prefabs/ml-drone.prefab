@@ -507,7 +507,7 @@ Camera:
   m_GameObject: {fileID: 2501208250613122380}
   m_Enabled: 0
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 4
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -523,13 +523,13 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 83
+  field of view: 49.3
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 4
@@ -601,7 +601,7 @@ MonoBehaviour:
   cameraWidth: 640
   cameraHeight: 480
   downscalingFactor: 20
-  FOV: 120
+  FOV: 60
   distanceDeviation: 2
   maxDistance: 10
   frameRate: 15
@@ -745,15 +745,13 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  maxStep: 0
+  maxStep: 35
   ccfov: {fileID: 2500447233470545005}
-  logReward: 0
-  movementForwardSpeedMission: 20
-  VisionSize: 4
-  rt: {fileID: 8600000, guid: 0676d49256ce947ecbe59aee2bdb7ab8, type: 2}
+  logReward: 1
+  VisionSize: 1
   timeBetweenDecisionsAtInference: 0
   training: 1
-  maxStepsCode: 0
+  maxStepsCode: 25
 --- !u!114 &2500447233972743232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,7 +773,7 @@ MonoBehaviour:
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
-  m_BehaviorName: My Behavior
+  m_BehaviorName: Drone Behaviour
   m_TeamID: 0
   m_UseChildSensors: 1
 --- !u!114 &2500447232498672916
