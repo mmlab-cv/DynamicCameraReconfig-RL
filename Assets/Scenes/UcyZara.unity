@@ -4610,6 +4610,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ml-drone 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2501227814951827164, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4670,6 +4675,11 @@ PrefabInstance:
       propertyPath: rt
       value: 
       objectReference: {fileID: 8600000, guid: f6d1ced42ba78464889cd9b84287a45d, type: 2}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: timeBetweenDecisionsAtInference
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_Model
@@ -8574,6 +8584,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: timeBetweenDecisionsAtInference
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
