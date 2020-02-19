@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net.Sockets;
 using Geometry;
 using MLAgents;
+using MLAgents.Sensor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(RenderTextureSensorComponent))]
 public class DroneAgent : Agent
 {
     [Header("Specific to Drone cameras")] public CameraControllerFOV ccfov;
@@ -48,22 +50,22 @@ public class DroneAgent : Agent
     private Rigidbody _rb;
     private GridController _gridController;
     public int VisionSize = 4;
-    public RenderTexture rt;
-    private Academy m_Academy;
     public float timeBetweenDecisionsAtInference;
     private float m_TimeSinceDecision;
+
+    private RenderTextureSensorComponent rtsc;
     
     private void Awake()
     {
         _gridController = GameObject.Find("Map").GetComponent<GridController>();
         map = GameObject.Find("Floor").GetComponent<BoxCollider>().bounds;
+        rtsc = GetComponent<RenderTextureSensorComponent>();
     }
 
     public override void InitializeAgent()
     {
         drone = GetComponent<Rigidbody>();
         windowSize1 = 10;
-        m_Academy = FindObjectOfType<Academy>();
 //        RequestDecision();
     }
 
@@ -110,16 +112,17 @@ public class DroneAgent : Agent
     public override void CollectObservations()
     {
         (int x_coord, int y_coord) = UpdateCoords();
-        _gridController.maskedx = x_coord;
-        _gridController.maskedy = y_coord;
         for (int i = x_coord - 1; i <= x_coord + 1; i++)
         for (int j = y_coord - 1; j <= y_coord + 1; j++)
             if (i >= 0 && j >= 0 && i < _gridController.overralConfidenceGrid.GetLength(0) &&
                 j < _gridController.overralConfidenceGrid.GetLength(0))
                 _gridController.overralConfidenceGrid[i, j].UpdateColor();
-        _gridController.overralConfidenceTexture.SetPixel(x_coord, y_coord, Color.yellow);
-        _gridController.overralConfidenceTexture.Apply();
-        Graphics.Blit(_gridController.overralConfidenceTexture, rt);
+        Texture2D texToUpdate = new Texture2D(1,1);
+        Graphics.CopyTexture(_gridController.overralConfidenceTexture, texToUpdate);
+        texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
+        texToUpdate.Apply();
+        Graphics.Blit(texToUpdate, rtsc.renderTexture);
+        Destroy(texToUpdate);
         SetActionMask(GetActionMask(x_coord, y_coord));
     }
 
@@ -255,7 +258,7 @@ public class DroneAgent : Agent
 
 
         if (logReward)
-            Debug.Log("Agent step " + GetStepCount() + ": Reward " + GetReward() + "\nGCM: " + gcm);
+            Debug.Log("Agent step " + GetStepCount() + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
 
         lastGCM = gcm;
         _gridController.currentTime++;
@@ -340,12 +343,11 @@ public class DroneAgent : Agent
         if (!training)
             return;
         _gridController.Reset();
-        ResetReward();
         decisions = requestedDecisions = 0;
         transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));
         lastGCM = -1;
         if (logReward)
-        Debug.Log("#################### AGENT RESET ####################");
+            Debug.Log("#################### AGENT RESET ####################");
         base.AgentReset();
     }
 }
