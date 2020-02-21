@@ -4675,6 +4675,16 @@ PrefabInstance:
       propertyPath: rt
       value: 
       objectReference: {fileID: 8600000, guid: f6d1ced42ba78464889cd9b84287a45d, type: 2}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: maxStep
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: maxStepsCode
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2500447232498672916, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: renderTexture
@@ -6790,8 +6800,8 @@ MonoBehaviour:
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
   priorityTexture_prec: {fileID: 0}
-  cellWidth: 12.5
-  cellDepth: 12.5
+  cellWidth: 17
+  cellDepth: 17
   ped_max: 2
   alfa: 0
   spatialThreshold: 0.2
@@ -8583,7 +8593,12 @@ PrefabInstance:
     - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: maxStepsCode
-      value: 25
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: maxStep
+      value: 16
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}

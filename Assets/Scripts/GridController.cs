@@ -14,7 +14,7 @@ public class GridController : MonoBehaviour
 
     public bool logMetrics = false;
     public bool plotMaps = false;
-    
+    [HideInInspector]
     public Cell[,] observationGrid,
         timeConfidenceGrid,
         spatialConfidenceGrid,
@@ -26,7 +26,7 @@ public class GridController : MonoBehaviour
         lastObsGrid,
         observationGridNewObs,
         priorityGrid, priorityGrid_prec;
-
+    [HideInInspector]
     public Texture2D observationTexture,
         timeConfidenceTexture,
         spatialConfidenceTexture,
