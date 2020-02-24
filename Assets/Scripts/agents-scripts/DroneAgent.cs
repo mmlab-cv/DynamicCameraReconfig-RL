@@ -60,9 +60,9 @@ public class DroneAgent : Agent
         return grid[x, y].value;
     }
 
-    (int x, int y) UpdateCoords()
+    (int, int) GetCoords()
     {
-        int x_coord = 0, y_coord = 0;
+        int xCoord = 0, yCoord = 0;
         Vector3 onTheGroundProjection = _map.ClosestPoint(_drone.transform.position);
         for (int i = 0; i < _gridController.priorityGrid.GetLength(0); i++)
         {
@@ -70,13 +70,13 @@ public class DroneAgent : Agent
             {
                 if (_gridController.priorityGrid[i, j].Contains(onTheGroundProjection))
                 {
-                    x_coord = i;
-                    y_coord = j;
+                    xCoord = i;
+                    yCoord = j;
                 }
             }
         }
 
-        return (x_coord, y_coord);
+        return (xCoord, yCoord);
     }
 
     (int, int) ActionToXY(int action)
@@ -120,9 +120,11 @@ public class DroneAgent : Agent
         return (x, y);
     }
 
+    #endregion
+    
     public override void CollectObservations()
     {
-        (int x_coord, int y_coord) = UpdateCoords();
+        (int x_coord, int y_coord) = GetCoords();
         for (int i = x_coord - 1; i <= x_coord + 1; i++)
         for (int j = y_coord - 1; j <= y_coord + 1; j++)
             if (i >= 0 && j >= 0 && i < _gridController.overralConfidenceGrid.GetLength(0) &&
@@ -132,13 +134,22 @@ public class DroneAgent : Agent
             _gridController.overralConfidenceTexture.height);
         Graphics.CopyTexture(_gridController.overralConfidenceTexture, texToUpdate);
         texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
+        DroneAgent[] drones = FindObjectsOfType<DroneAgent>();
+        foreach (DroneAgent drone in drones)
+        {
+            if (drone != this)
+            {
+                (int x, int y) pos = drone.GetCoords();
+                texToUpdate.SetPixel(pos.x, pos.y, Color.blue);
+            }
+        }
         texToUpdate.Apply();
+        texToUpdate.filterMode = FilterMode.Point;
+        texToUpdate.wrapMode = TextureWrapMode.Clamp;
         Graphics.Blit(texToUpdate, rtsc.renderTexture);
         Destroy(texToUpdate);
         SetActionMask(GetActionMask(x_coord, y_coord));
     }
-
-    #endregion
 
     IEnumerable<int> GetActionMask(int x_coord, int y_coord)
     {
@@ -161,16 +172,21 @@ public class DroneAgent : Agent
 
     public bool training = false;
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         if (!_gridController)
             return;
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(transform.position,
-            new Vector3(_gridController.cellWidth * VisionSize * 2, 0.1f, _gridController.cellDepth * VisionSize * 2));
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireCube(transform.position,
-            new Vector3(_gridController.cellWidth * 3, 0.1f, _gridController.cellDepth * 3));
+            new Vector3(_gridController.cellWidth * VisionSize, 0.1f, _gridController.cellDepth * VisionSize));
+        Gizmos.color = Color.blue;
+        var drones = FindObjectsOfType<DroneAgent>();
+        foreach (var drone in drones)
+        {
+            if (drone != this)
+                Gizmos.DrawWireCube(drone.transform.position,
+                new Vector3(_gridController.cellDepth * drone.VisionSize, 0.1f, _gridController.cellDepth * drone.VisionSize));
+        }
     }
 
     [SerializeField] [Tooltip("This is needed to compute the reward")]
@@ -179,7 +195,7 @@ public class DroneAgent : Agent
     public override void AgentAction(float[] vectorAction)
     {
         (int x, int y) = ActionToXY(Mathf.FloorToInt(vectorAction[0]));
-        (int xCoord, int yCoord) = UpdateCoords();
+        (int xCoord, int yCoord) = GetCoords();
         
         _drone.transform.position = new Vector3(_gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().x,
             _drone.transform.position.y, _gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().z);
@@ -230,7 +246,7 @@ public class DroneAgent : Agent
             ret = new float[] {k_BottomLeft};
         if (Input.GetKey(KeyCode.C))
             ret = new float[] {k_BottomRight};
-        (int x, int y) = UpdateCoords();
+        (int x, int y) = GetCoords();
         if (GetActionMask(x, y).Contains((int) ret[0]))
             ret = new float[] {k_NoAction};
         return ret;

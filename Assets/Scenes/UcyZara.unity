@@ -4048,6 +4048,111 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 488835787}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &988131723
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2501227814951827164, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_Name
+      value: ml-drone 2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501227814951827164, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: rt
+      value: 
+      objectReference: {fileID: 8600000, guid: f6d1ced42ba78464889cd9b84287a45d, type: 2}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: maxStep
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743235, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: maxStepsCode
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447232498672916, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: renderTexture
+      value: 
+      objectReference: {fileID: 8600000, guid: 0f0c21fd2eb0d4160aff7d0312cfd924, type: 2}
+    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: Drone
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: e8f1ab9b84126491cb2a820acf4a37e3,
+        type: 3}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
 --- !u!1 &988270353
 GameObject:
   m_ObjectHideFlags: 0
@@ -4618,7 +4723,7 @@ PrefabInstance:
     - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.9
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
@@ -4628,7 +4733,7 @@ PrefabInstance:
     - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -18
+      value: 13.9
       objectReference: {fileID: 0}
     - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
@@ -4689,7 +4794,18 @@ PrefabInstance:
         type: 3}
       propertyPath: renderTexture
       value: 
-      objectReference: {fileID: 8600000, guid: f6d1ced42ba78464889cd9b84287a45d, type: 2}
+      objectReference: {fileID: 8600000, guid: 23b390c9481d9429c9585ca6883ef033, type: 2}
+    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: Drone
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: e8f1ab9b84126491cb2a820acf4a37e3,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
 --- !u!114 &1085430310 stripped
@@ -8600,5 +8716,16 @@ PrefabInstance:
       propertyPath: maxStep
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: Drone
+      objectReference: {fileID: 0}
+    - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: e8f1ab9b84126491cb2a820acf4a37e3,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}

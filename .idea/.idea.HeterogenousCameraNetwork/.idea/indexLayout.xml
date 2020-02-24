@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelUserStore">
-    <attachedFolders>
-      <Path>../../Unity/ml-agents/com.unity.ml-agents</Path>
-    </attachedFolders>
+    <attachedFolders />
     <explicitIncludes>
       <Path>Library/PackageCache/com.unity.barracuda@0.6.0-preview</Path>
       <Path>Library/PackageCache/com.unity.burst@1.1.1</Path>
