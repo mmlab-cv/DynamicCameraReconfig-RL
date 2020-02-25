@@ -4149,8 +4149,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: e8f1ab9b84126491cb2a820acf4a37e3,
-        type: 3}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
 --- !u!1 &988270353
@@ -4804,8 +4803,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: e8f1ab9b84126491cb2a820acf4a37e3,
-        type: 3}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
 --- !u!114 &1085430310 stripped
@@ -6916,8 +6914,8 @@ MonoBehaviour:
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
   priorityTexture_prec: {fileID: 0}
-  cellWidth: 17
-  cellDepth: 17
+  cellWidth: 12
+  cellDepth: 12
   ped_max: 2
   alfa: 0
   spatialThreshold: 0.2
@@ -8725,7 +8723,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: e8f1ab9b84126491cb2a820acf4a37e3,
-        type: 3}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
