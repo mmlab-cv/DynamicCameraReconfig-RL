@@ -4063,7 +4063,7 @@ PrefabInstance:
     - target: {fileID: 2501227814951827164, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2495822372283279182, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
@@ -4140,6 +4140,16 @@ PrefabInstance:
       propertyPath: renderTexture
       value: 
       objectReference: {fileID: 8600000, guid: 0f0c21fd2eb0d4160aff7d0312cfd924, type: 2}
+    - target: {fileID: 2482136061727385110, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482136061727385110, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_BehaviorName
@@ -4149,7 +4159,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 2d3ecc3897cc847149b3a6e506ff35e1,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
 --- !u!1 &988270353
@@ -4794,6 +4805,16 @@ PrefabInstance:
       propertyPath: renderTexture
       value: 
       objectReference: {fileID: 8600000, guid: 23b390c9481d9429c9585ca6883ef033, type: 2}
+    - target: {fileID: 2482136061727385110, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482136061727385110, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_BehaviorName
@@ -4803,7 +4824,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 2d3ecc3897cc847149b3a6e506ff35e1,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
 --- !u!114 &1085430310 stripped
@@ -8714,6 +8736,16 @@ PrefabInstance:
       propertyPath: maxStep
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 2482136061727385110, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482136061727385110, guid: 78614221b4c86469c8c92a33915d6b87,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2500447233972743232, guid: 78614221b4c86469c8c92a33915d6b87,
         type: 3}
       propertyPath: m_BehaviorName
@@ -8723,6 +8755,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5022602860645237092, guid: 2d3ecc3897cc847149b3a6e506ff35e1,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78614221b4c86469c8c92a33915d6b87, type: 3}
