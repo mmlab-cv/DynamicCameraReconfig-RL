@@ -43,6 +43,8 @@ public class GridController : MonoBehaviour
 
     public float ped_max = 5;
 
+    [Tooltip("The setting α = 1 causes the network to focus on observing more densely populated areas with no incentive to explore unknown cells.\n" +
+             "In contrast, α = 0 causes the network to focus on global coverage only without distinguishing on the crowd density of the cells.")]
     [Range(0.0f, 1.0f)] public float alfa = 0.5f;
 
 
@@ -225,7 +227,7 @@ public class GridController : MonoBehaviour
             }
         }
 
-        GCM += (conf * 100 /
+        GCM = (conf * 100 /
                 (numberOfCellsWidth * numberOfCellsDepth)
             ); //(GCM + conf / numberOfCellsWidth * numberOfCellsDepth)/(currentTime + 1);
         if (logMetrics) Debug.Log("GCM = " + GCM / (currentTime + 1));
@@ -254,7 +256,7 @@ public class GridController : MonoBehaviour
 
     private void PeopleCoverageMetric()
     {
-        GameObject[] peop = PersonCollection.Instance.People.ToArray();
+        var peop = PersonCollection.Instance.People;
         int conf = 0;
 
         foreach (GameObject child in peop)
@@ -290,7 +292,7 @@ public class GridController : MonoBehaviour
             peopleCovered = peopleCovered + conf;
 
             PCM = 100 * (float) peopleCovered / (float) peopleHistory;
-            peopleTimeCount = peopleTimeCount + 1;
+            peopleTimeCount += 1;
             if (logMetrics) Debug.Log("PCM = " + PCM);
         }
     }
@@ -378,7 +380,13 @@ public class GridController : MonoBehaviour
 //        //reset all newObs grids before new time step
 //    }
 
-    public void UpdateGCMValues()
+// private void LateUpdate()
+    // {
+    //     UpdateGCMValues();
+    //     currentTime += 1;
+    // }
+
+public void UpdateGCMValues()
     {
         UpdateTimeConfidenceGrid();
         UpdateObservationGridNewObs();

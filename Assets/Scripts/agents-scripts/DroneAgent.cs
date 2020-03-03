@@ -7,12 +7,13 @@ using Geometry;
 using MLAgents;
 using MLAgents.Sensor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(RenderTextureSensorComponent))]
 public class DroneAgent : Agent
 {
-    [Header("Specific to Drone cameras")] public CameraControllerFOV ccfov;
+    [Header("Specific to Drone cameras")] private CameraControllerFOV _ccfov;
 
     Rigidbody _drone;
 
@@ -23,7 +24,7 @@ public class DroneAgent : Agent
     private Rigidbody _rb;
     private GridController _gridController;
     public int VisionSize = 4;
-    public float timeBetweenDecisionsAtInference;
+    
     private float m_TimeSinceDecision;
 
     private RenderTextureSensorComponent rtsc;
@@ -32,12 +33,15 @@ public class DroneAgent : Agent
     {
         _gridController = GameObject.Find("Map").GetComponent<GridController>();
         _map = GameObject.Find("Floor").GetComponent<BoxCollider>().bounds;
+        _ccfov = GetComponentInChildren<CameraControllerFOV>();
         rtsc = GetComponent<RenderTextureSensorComponent>();
+        rtsc.renderTexture = RenderTexture.GetTemporary(84,84);
     }
 
     public override void InitializeAgent()
     {
         _drone = GetComponent<Rigidbody>();
+        
 //        RequestDecision();
     }
 
@@ -166,11 +170,8 @@ public class DroneAgent : Agent
     }
 
     private float lastTime;
-
-    private float lastGCM = -1;
+    
     private int decisions = 0, requestedDecisions = 0;
-
-    public bool training = false;
 
     private void OnDrawGizmosSelected()
     {
@@ -189,17 +190,15 @@ public class DroneAgent : Agent
         }
     }
 
-    [SerializeField] [Tooltip("This is needed to compute the reward")]
-    private int maxStepsCode;
-
     public override void AgentAction(float[] vectorAction)
     {
         (int x, int y) = ActionToXY(Mathf.FloorToInt(vectorAction[0]));
         (int xCoord, int yCoord) = GetCoords();
         
+        
         _drone.transform.position = new Vector3(_gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().x,
             _drone.transform.position.y, _gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().z);
-        float maxSteps = maxStepsCode + 1f;
+        float maxSteps = PseudoAcademy.Instance.minimumGoodDecisions + 1f;
         float gridSize = _gridController.priorityGrid.GetLength(0) * _gridController.priorityGrid.GetLength(1);
         float genReward = 1f / (maxSteps + gridSize);
         if (_gridController.overralConfidenceGrid[xCoord + x, yCoord + y].value > 0)
@@ -208,7 +207,7 @@ public class DroneAgent : Agent
             AddReward(genReward);
         if (decisions > gridSize)
             AddReward(-genReward);
-        ccfov.Project();
+        _ccfov.Project();
 
         _gridController.UpdateGCMValues(); //We force the update of the values 
 
@@ -221,9 +220,10 @@ public class DroneAgent : Agent
 
         if (logReward)
             Debug.Log("Agent step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
-
-        lastGCM = gcm;
-        _gridController.currentTime++;
+        
+        PseudoAcademy.Instance.SendAction(this);
+        if (decisions >= PseudoAcademy.Instance.maxDecisions)
+            PseudoAcademy.Instance.Reset();
         decisions++;
     }
     
@@ -259,16 +259,18 @@ public class DroneAgent : Agent
 
     private void WaitTimeInference()
     {
-        if (training)
+        if (PseudoAcademy.Instance.isTraining)
         {
-            RequestDecision();
+            if (PseudoAcademy.Instance.CanDecide(this))
+                RequestDecision();
         }
         else
         {
-            if (m_TimeSinceDecision >= timeBetweenDecisionsAtInference)
+            if (m_TimeSinceDecision >= PseudoAcademy.Instance.timeBetweenDecisionsAtInference)
             {
                 m_TimeSinceDecision = 0f;
-                RequestDecision();
+                if (PseudoAcademy.Instance.CanDecide(this))
+                    RequestDecision();
             }
             else
             {
@@ -279,12 +281,10 @@ public class DroneAgent : Agent
 
     public override void AgentReset()
     {
-        if (!training)
+        if (!PseudoAcademy.Instance.isTraining)
             return;
-        _gridController.Reset();
         decisions = requestedDecisions = 0;
         transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));
-        lastGCM = -1;
         if (logReward)
             Debug.Log("#################### AGENT RESET ####################");
         base.AgentReset();
