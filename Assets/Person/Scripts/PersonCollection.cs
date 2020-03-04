@@ -11,6 +11,13 @@ public class PersonCollection : MonoBehaviour
 		People = new List<GameObject>();
 		Instance = this;
 	}
-
+	
 	public List<GameObject> People;
+
+	public void KillThemAll()
+	{
+		foreach (GameObject person in People)
+			Destroy(person);
+		People.Clear();
+	}
 }

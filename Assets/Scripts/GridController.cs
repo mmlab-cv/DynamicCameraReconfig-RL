@@ -14,8 +14,8 @@ public class GridController : MonoBehaviour
 
     public bool logMetrics = false;
     public bool plotMaps = false;
-    [HideInInspector]
-    public Cell[,] observationGrid,
+
+    [HideInInspector] public Cell[,] observationGrid,
         timeConfidenceGrid,
         spatialConfidenceGrid,
         overralConfidenceGrid,
@@ -25,9 +25,10 @@ public class GridController : MonoBehaviour
         timeConfidenceGridNewObs,
         lastObsGrid,
         observationGridNewObs,
-        priorityGrid, priorityGrid_prec;
-    [HideInInspector]
-    public Texture2D observationTexture,
+        priorityGrid,
+        priorityGrid_prec;
+
+    [HideInInspector] public Texture2D observationTexture,
         timeConfidenceTexture,
         spatialConfidenceTexture,
         overralConfidenceTexture,
@@ -37,15 +38,18 @@ public class GridController : MonoBehaviour
         timeConfidenceTextureNewObs,
         lastObsTexture,
         observationTextureNewObs,
-        priorityTexture, priorityTexture_prec;
+        priorityTexture,
+        priorityTexture_prec;
 
     public float cellWidth = 1f, cellDepth = 1f;
 
     public float ped_max = 5;
 
-    [Tooltip("The setting α = 1 causes the network to focus on observing more densely populated areas with no incentive to explore unknown cells.\n" +
-             "In contrast, α = 0 causes the network to focus on global coverage only without distinguishing on the crowd density of the cells.")]
-    [Range(0.0f, 1.0f)] public float alfa = 0.5f;
+    [Tooltip(
+        "The setting α = 1 causes the network to focus on observing more densely populated areas with no incentive to explore unknown cells.\n" +
+        "In contrast, α = 0 causes the network to focus on global coverage only without distinguishing on the crowd density of the cells.")]
+    [Range(0.0f, 1.0f)]
+    public float alfa = 0.5f;
 
 
     // Variable for metrics
@@ -228,11 +232,11 @@ public class GridController : MonoBehaviour
         }
 
         GCM = (conf * 100 /
-                (numberOfCellsWidth * numberOfCellsDepth)
+               (numberOfCellsWidth * numberOfCellsDepth)
             ); //(GCM + conf / numberOfCellsWidth * numberOfCellsDepth)/(currentTime + 1);
         if (logMetrics) Debug.Log("GCM = " + GCM / (currentTime + 1));
     }
-    
+
     public float GlobalCoverageMetric_Current()
     {
         float gcm_curr = 0f;
@@ -248,9 +252,9 @@ public class GridController : MonoBehaviour
             }
         }
 
-        gcm_curr = (conf / (float)(numberOfCellsWidth *
-                            numberOfCellsDepth)
-        ); //(GCM + conf / numberOfCellsWidth * numberOfCellsDepth)/(currentTime + 1);
+        gcm_curr = (conf / (float) (numberOfCellsWidth *
+                                    numberOfCellsDepth)
+            ); //(GCM + conf / numberOfCellsWidth * numberOfCellsDepth)/(currentTime + 1);
         return gcm_curr;
     }
 
@@ -318,25 +322,25 @@ public class GridController : MonoBehaviour
         {
             for (int j = 0; j < numberOfCellsDepth; j++)
             {
-                observationGrid[i,j].SetValue(0);
-                timeConfidenceGrid[i,j].SetValue(0);
-                spatialConfidenceGrid[i,j].SetValue(0);
-                overralConfidenceGrid[i,j].SetValue(0);
-                overralConfidenceGridTime[i,j].SetValue(0);
-                overralConfidenceGridNewObs[i,j].SetValue(0);
-                spatialConfidenceGridNewObs[i,j].SetValue(0);
-                timeConfidenceGridNewObs[i,j].SetValue(0);
-                lastObsGrid[i,j].SetValue(-t_max);
-                observationGridNewObs[i,j].SetValue(0);
+                observationGrid[i, j].SetValue(0);
+                timeConfidenceGrid[i, j].SetValue(0);
+                spatialConfidenceGrid[i, j].SetValue(0);
+                overralConfidenceGrid[i, j].SetValue(0);
+                overralConfidenceGridTime[i, j].SetValue(0);
+                overralConfidenceGridNewObs[i, j].SetValue(0);
+                spatialConfidenceGridNewObs[i, j].SetValue(0);
+                timeConfidenceGridNewObs[i, j].SetValue(0);
+                lastObsGrid[i, j].SetValue(-t_max);
+                observationGridNewObs[i, j].SetValue(0);
             }
         }
+
         currentTime = 0;
         GCM = 0;
         PCM = 0;
         peopleHistory = 0;
         peopleCovered = 0;
         peopleTimeCount = 0;
-        
     }
 
     private void Awake()
@@ -369,7 +373,7 @@ public class GridController : MonoBehaviour
 
         mapVolume = GameObject.Find("Map").GetComponent<MapController>().mapBounds;
         map = GameObject.Find("Floor").GetComponent<BoxCollider>().bounds;
-        
+
         Reset();
     }
 
@@ -380,13 +384,16 @@ public class GridController : MonoBehaviour
 //        //reset all newObs grids before new time step
 //    }
 
-// private void LateUpdate()
-    // {
-    //     UpdateGCMValues();
-    //     currentTime += 1;
-    // }
+    private void LateUpdate()
+    {
+        if (!PseudoAcademy.Instance)
+        {
+            UpdateGCMValues();
+            currentTime += 1;
+        }
+    }
 
-public void UpdateGCMValues()
+    public void UpdateGCMValues()
     {
         UpdateTimeConfidenceGrid();
         UpdateObservationGridNewObs();
@@ -422,8 +429,8 @@ public void UpdateGCMValues()
                     overralConfidenceGrid[i, j].SetValue(overralConfidenceGridTime[i, j].value);
                     //Debug.Log("HEREEEEEE: Time");
                 }
-                
-                priorityGrid_prec[i, j].SetValue(priorityGrid[i,j].value);
+
+                priorityGrid_prec[i, j].SetValue(priorityGrid[i, j].value);
                 priorityGrid[i, j].SetValue(alfa * observationGrid[i, j].value +
                                             (1 - alfa) * (1 - overralConfidenceGrid[i, j].value));
 

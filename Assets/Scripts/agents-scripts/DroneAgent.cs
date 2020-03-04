@@ -222,7 +222,7 @@ public class DroneAgent : Agent
             Debug.Log("Agent step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
         
         PseudoAcademy.Instance.SendAction(this);
-        if (decisions >= PseudoAcademy.Instance.maxDecisions)
+        if (decisions >= PseudoAcademy.Instance.maxDecisions && PseudoAcademy.Instance.resetAllAtInferece)
             PseudoAcademy.Instance.Reset();
         decisions++;
     }
@@ -281,7 +281,7 @@ public class DroneAgent : Agent
 
     public override void AgentReset()
     {
-        if (!PseudoAcademy.Instance.isTraining)
+        if (!PseudoAcademy.Instance.isTraining && !PseudoAcademy.Instance.resetAllAtInferece)
             return;
         decisions = requestedDecisions = 0;
         transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));

@@ -28,6 +28,10 @@ public class PseudoAcademy : MonoBehaviour
     [HideInInspector]
     public bool isTraining;
     [SerializeField] private NNModel inferenceModel;
+    public bool resetAllAtInferece;
+    
+    public PeopleSourceMod psm;
+    public int peopleToSpawn;
     private void Awake()
     {
         Instance = this;
@@ -43,6 +47,13 @@ public class PseudoAcademy : MonoBehaviour
             _droneAgents.Add(drone);
         }
         _droneAction = new bool[_droneAgents.Count];
+        Reset();
+    }
+    
+    void SpawnHuman()
+    {
+        psm.transform.position = new Vector3(Random.Range(-21f, 21f), 0.05f, Random.Range(-21f, 21f));
+        psm.GenerateHuman();
     }
 
     public bool CanDecide(DroneAgent agent)
@@ -70,9 +81,12 @@ public class PseudoAcademy : MonoBehaviour
 
     public void Reset()
     {
-        gridController.alfa = Random.Range(0, 1);
+        // gridController.alfa = Random.Range(0, 1);
+        PersonCollection.Instance.KillThemAll();
         gridController.Reset();
         foreach (var droneAgent in _droneAgents)
             droneAgent.AgentReset();
+        for (int i = 0; i < peopleToSpawn; i++)
+            SpawnHuman();
     }
 }

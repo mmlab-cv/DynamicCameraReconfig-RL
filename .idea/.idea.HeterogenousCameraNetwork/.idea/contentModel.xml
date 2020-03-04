@@ -79,6 +79,7 @@
           <e p="NewSurfaceShader 1.shader" t="Include" />
           <e p="NewSurfaceShader 2.shader" t="Include" />
           <e p="PeopleEditorGenerator_Editor.cs" t="Include" />
+          <e p="PeopleSourceMod_Editor.cs" t="Include" />
           <e p="RectangularSource_Editor.cs" t="Include" />
         </e>
         <e p="FFmpegOut" t="Include">
@@ -114,6 +115,7 @@
         <e p="Scripts" t="Include">
           <e p="agents-scripts" t="Include">
             <e p="DroneAgent.cs" t="Include" />
+            <e p="PeopleSourceMod.cs" t="Include" />
             <e p="Trained Models" t="Include">
               <e p="PseudoAcademy.cs" t="Include" />
             </e>
