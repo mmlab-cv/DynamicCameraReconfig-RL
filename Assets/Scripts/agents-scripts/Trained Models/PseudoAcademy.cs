@@ -19,9 +19,17 @@ public class PseudoAcademy : MonoBehaviour
     private List<DroneAgent> _droneAgents;
     [FormerlySerializedAs("_gridController")] [SerializeField]
     private GridController gridController;
+    public enum TextureToTrain
+    {
+        OverallConfidence, 
+        PriorityTexture
+    }
+
+    public TextureToTrain observationTexture;
     private bool[] _droneAction;
     
     
+
     public float timeBetweenDecisionsAtInference = 1f;
     public int minimumGoodDecisions;
     public int maxDecisions;
@@ -32,6 +40,7 @@ public class PseudoAcademy : MonoBehaviour
     
     public PeopleSourceMod psm;
     public int peopleToSpawn;
+    public bool logRewards;
     private void Awake()
     {
         Instance = this;
@@ -68,6 +77,7 @@ public class PseudoAcademy : MonoBehaviour
             if (!_droneAction[i])
                 return;
         float gcm = gridController.GlobalCoverageMetric_Current();
+        float pcm = gridController.PeopleCoverageMetric();
         if (Math.Abs(gcm - 1) < 0.01f){
             foreach (var droneAgent in _droneAgents)
             {
@@ -77,6 +87,7 @@ public class PseudoAcademy : MonoBehaviour
         gridController.currentTime++;
         for (int i = 0; i < _droneAction.Length; ++i)
             _droneAction[i] = false;
+        Debug.Log(pcm);
     }
 
     public void Reset()

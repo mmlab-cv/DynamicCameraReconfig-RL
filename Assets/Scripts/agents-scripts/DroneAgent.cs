@@ -15,9 +15,7 @@ public class DroneAgent : Agent
 {
     [Header("Specific to Drone cameras")] private CameraControllerFOV _ccfov;
 
-    Rigidbody _drone;
-
-    [SerializeField] private bool logReward;
+    private Rigidbody _drone;
 
     private Bounds _map;
 
@@ -129,14 +127,26 @@ public class DroneAgent : Agent
     public override void CollectObservations()
     {
         (int x_coord, int y_coord) = GetCoords();
+        Cell[,] grid;
+        Texture2D tex;
+        if (PseudoAcademy.Instance.observationTexture == PseudoAcademy.TextureToTrain.OverallConfidence)
+        {
+            grid = _gridController.overralConfidenceGrid;
+            tex = _gridController.overralConfidenceTexture;
+        }
+        else
+        {
+            grid = _gridController.priorityGrid;
+            tex = _gridController.priorityTexture;
+        }
+
         for (int i = x_coord - 1; i <= x_coord + 1; i++)
         for (int j = y_coord - 1; j <= y_coord + 1; j++)
-            if (i >= 0 && j >= 0 && i < _gridController.overralConfidenceGrid.GetLength(0) &&
-                j < _gridController.overralConfidenceGrid.GetLength(0))
-                _gridController.overralConfidenceGrid[i, j].UpdateColor();
-        Texture2D texToUpdate = new Texture2D(_gridController.overralConfidenceTexture.width,
-            _gridController.overralConfidenceTexture.height);
-        Graphics.CopyTexture(_gridController.overralConfidenceTexture, texToUpdate);
+            if (i >= 0 && j >= 0 && i < grid.GetLength(0) &&
+                j < grid.GetLength(0))
+                grid[i, j].UpdateColor();
+        Texture2D texToUpdate = new Texture2D(tex.width, tex.height);
+        Graphics.CopyTexture(tex, texToUpdate);
         texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
         DroneAgent[] drones = FindObjectsOfType<DroneAgent>();
         foreach (DroneAgent drone in drones)
@@ -218,8 +228,8 @@ public class DroneAgent : Agent
             Done();
         }
 
-        if (logReward)
-            Debug.Log("Agent step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
+        if (PseudoAcademy.Instance.logRewards)
+            Debug.Log("Agent "+ name +" step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
         
         PseudoAcademy.Instance.SendAction(this);
         if (decisions >= PseudoAcademy.Instance.maxDecisions && PseudoAcademy.Instance.resetAllAtInferece)
@@ -285,8 +295,8 @@ public class DroneAgent : Agent
             return;
         decisions = requestedDecisions = 0;
         transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));
-        if (logReward)
-            Debug.Log("#################### AGENT RESET ####################");
+        if (PseudoAcademy.Instance.logRewards)
+            Debug.Log("#################### AGENT "+ name +" RESET ####################");
         base.AgentReset();
     }
 }

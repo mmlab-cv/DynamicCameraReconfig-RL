@@ -258,7 +258,7 @@ public class GridController : MonoBehaviour
         return gcm_curr;
     }
 
-    private void PeopleCoverageMetric()
+    public float PeopleCoverageMetric()
     {
         var peop = PersonCollection.Instance.People;
         int conf = 0;
@@ -299,6 +299,8 @@ public class GridController : MonoBehaviour
             peopleTimeCount += 1;
             if (logMetrics) Debug.Log("PCM = " + PCM);
         }
+
+        return PCM;
     }
 
 
