@@ -22,7 +22,7 @@ public class DroneAgent : Agent
     private Rigidbody _rb;
     private GridController _gridController;
     public int VisionSize = 4;
-    
+
     private float m_TimeSinceDecision;
 
     private RenderTextureSensorComponent rtsc;
@@ -33,13 +33,13 @@ public class DroneAgent : Agent
         _map = GameObject.Find("Floor").GetComponent<BoxCollider>().bounds;
         _ccfov = GetComponentInChildren<CameraControllerFOV>();
         rtsc = GetComponent<RenderTextureSensorComponent>();
-        rtsc.renderTexture = RenderTexture.GetTemporary(84,84);
+        rtsc.renderTexture = RenderTexture.GetTemporary(84, 84);
     }
 
     public override void InitializeAgent()
     {
         _drone = GetComponent<Rigidbody>();
-        
+
 //        RequestDecision();
     }
 
@@ -123,7 +123,7 @@ public class DroneAgent : Agent
     }
 
     #endregion
-    
+
     public override void CollectObservations()
     {
         (int x_coord, int y_coord) = GetCoords();
@@ -157,6 +157,12 @@ public class DroneAgent : Agent
                 texToUpdate.SetPixel(pos.x, pos.y, Color.blue);
             }
         }
+
+        foreach (var pos in PseudoAcademy.Instance.seenPeoplePositions)
+        {
+            texToUpdate.SetPixel(pos.Item1, pos.Item2, Color.cyan);
+        }
+        
         texToUpdate.Apply();
         texToUpdate.filterMode = FilterMode.Point;
         texToUpdate.wrapMode = TextureWrapMode.Clamp;
@@ -180,7 +186,7 @@ public class DroneAgent : Agent
     }
 
     private float lastTime;
-    
+
     private int decisions = 0, requestedDecisions = 0;
 
     private void OnDrawGizmosSelected()
@@ -196,7 +202,8 @@ public class DroneAgent : Agent
         {
             if (drone != this)
                 Gizmos.DrawWireCube(drone.transform.position,
-                new Vector3(_gridController.cellDepth * drone.VisionSize, 0.1f, _gridController.cellDepth * drone.VisionSize));
+                    new Vector3(_gridController.cellDepth * drone.VisionSize, 0.1f,
+                        _gridController.cellDepth * drone.VisionSize));
         }
     }
 
@@ -204,40 +211,68 @@ public class DroneAgent : Agent
     {
         (int x, int y) = ActionToXY(Mathf.FloorToInt(vectorAction[0]));
         (int xCoord, int yCoord) = GetCoords();
-        
-        
-        _drone.transform.position = new Vector3(_gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().x,
+        Cell[,] grid;
+        if (PseudoAcademy.Instance.observationTexture == PseudoAcademy.TextureToTrain.OverallConfidence)
+            grid = _gridController.overralConfidenceGrid;
+        else
+            grid = _gridController.priorityGrid;
+
+        _drone.transform.position = new Vector3(
+            _gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().x,
             _drone.transform.position.y, _gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().z);
         float maxSteps = PseudoAcademy.Instance.minimumGoodDecisions + 1f;
-        float gridSize = _gridController.priorityGrid.GetLength(0) * _gridController.priorityGrid.GetLength(1);
-        float genReward = 1f / (maxSteps + gridSize);
-        if (_gridController.overralConfidenceGrid[xCoord + x, yCoord + y].value > 0)
-            AddReward(-genReward);
-        else if (_gridController.overralConfidenceGrid[xCoord + x, yCoord + y].value < 0.1)
-            AddReward(genReward);
-        if (decisions > gridSize)
-            AddReward(-genReward);
-        _ccfov.Project();
+        float gridSize = grid.GetLength(0) * grid.GetLength(1);
+        if (_gridController.alfa < 1)
+        {
+            float genReward = 1f / (maxSteps + gridSize);
+            if (grid[xCoord + x, yCoord + y].value > 0)
+                AddReward(-genReward);
+            else if (grid[xCoord + x, yCoord + y].value < 0.1)
+                AddReward(genReward);
+            if (decisions > gridSize)
+                AddReward(-genReward);
+            _ccfov.Project();
+            float gcm = _gridController.GlobalCoverageMetric_Current();
+            if (Math.Abs(gcm - 1) < 0.01f)
+            {
+                AddReward(1 - genReward * gridSize);
+                Done();
+            }
+        }
+        else
+        {
+            _ccfov.Project();
+            if (_ccfov.personHit.Count > 0)
+            {
+                var pos = new Tuple<int, int>(xCoord + x, yCoord + y);
+                if (!PseudoAcademy.Instance.seenPeoplePositions.Contains(pos))
+                {
+                    PseudoAcademy.Instance.seenPeoplePositions.Add(pos);
+                    AddReward(1f/PseudoAcademy.Instance.peopleToSpawn);
+                }
+            }
+            else
+            {
+                AddReward(-1f/PseudoAcademy.Instance.maxDecisions);
+            }
+        }
+        
+
 
         _gridController.UpdateGCMValues(); //We force the update of the values 
 
-        float gcm = _gridController.GlobalCoverageMetric_Current();
-        if (Math.Abs(gcm - 1) < 0.01f)
-        {
-            AddReward(1 - genReward * gridSize);
-            Done();
-        }
-
-        if (PseudoAcademy.Instance.logRewards)
-            Debug.Log("Agent "+ name +" step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + gcm);
         
+        if (PseudoAcademy.Instance.logRewards)
+            Debug.Log("Agent " + name + " step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + _gridController.GlobalCoverageMetric_Current());
+
         PseudoAcademy.Instance.SendAction(this);
-        if (decisions >= PseudoAcademy.Instance.maxDecisions && PseudoAcademy.Instance.resetAllAtInferece)
+        if (decisions >= PseudoAcademy.Instance.maxDecisions && (PseudoAcademy.Instance.isTraining || PseudoAcademy.Instance.resetAllAtInferece))
             PseudoAcademy.Instance.Reset();
         decisions++;
     }
-    
-    public override float[] Heuristic() // this method allows us to use the drone with the keyboard to check that everything is working
+
+    public override float[]
+        Heuristic() // this method allows us to use the drone with the keyboard to check that everything is working
     {
         float[] ret = {k_NoAction};
         if (Input.GetKey(KeyCode.D))
@@ -296,7 +331,7 @@ public class DroneAgent : Agent
         decisions = requestedDecisions = 0;
         transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));
         if (PseudoAcademy.Instance.logRewards)
-            Debug.Log("#################### AGENT "+ name +" RESET ####################");
+            Debug.Log("#################### AGENT " + name + " RESET ####################");
         base.AgentReset();
     }
 }

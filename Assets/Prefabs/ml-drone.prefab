@@ -601,7 +601,7 @@ MonoBehaviour:
   cameraWidth: 640
   cameraHeight: 480
   downscalingFactor: 20
-  FOV: 60
+  FOV: 100
   distanceDeviation: 2
   maxDistance: 10
   frameRate: 15
@@ -746,7 +746,6 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   maxStep: 0
-  logReward: 1
   VisionSize: 1
 --- !u!114 &2500447233972743232
 MonoBehaviour:

@@ -379,13 +379,6 @@ public class GridController : MonoBehaviour
         Reset();
     }
 
-//    private void Update()
-//    {
-//        currentTime += Time.deltaTime;
-//        //Debug.Log("current" + currentTime );
-//        //reset all newObs grids before new time step
-//    }
-
     private void LateUpdate()
     {
         if (!PseudoAcademy.Instance)

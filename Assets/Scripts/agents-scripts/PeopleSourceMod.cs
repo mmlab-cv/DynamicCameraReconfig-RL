@@ -47,7 +47,7 @@ public class PeopleSourceMod : MonoBehaviour
     // Update is called once per frame
     private int nextGeneration = 0;
 
-    public void GenerateHuman()
+    public void GenerateHuman(bool steady, bool exactlyOnCenter)
     {
         float randomTarget = Random.value;
         float probability = 0.0f;
@@ -66,8 +66,7 @@ public class PeopleSourceMod : MonoBehaviour
 
         float groupSize = Random.value;
         probability = 0.0f;
-        Vector3 GenerationPoint = (Random.Range(-0.5f, 0.5f) * transform.localScale.x * transform.right + Random.Range(-0.5f, 0.5f) * transform.localScale.z * transform.forward) + transform.position;
-
+        Vector3 GenerationPoint = (exactlyOnCenter) ? transform.position : (Random.Range(-0.5f, 0.5f) * transform.localScale.x * transform.right + Random.Range(-0.5f, 0.5f) * transform.localScale.z * transform.forward) + transform.position;
 
         GameObject person = new GameObject("Person");
         person.transform.SetParent(peopleTransform);
@@ -80,6 +79,8 @@ public class PeopleSourceMod : MonoBehaviour
         personCollider.direction = 1;
         personCollider.height = 2.184f;
         personCollider.radius = 0.5f;
+        if (steady)
+            script.desiredSpeed = 0;
         GameObject sel = Instantiate<GameObject>(selection, person.transform, true);
         sel.transform.position = new Vector3(GenerationPoint.x, 0.01f, GenerationPoint.z);
         GenerateUMA(person);
