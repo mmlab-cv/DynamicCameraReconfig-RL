@@ -482,7 +482,6 @@ MonoBehaviour:
   boundingBoxes: []
   margin: 0
   cam: {fileID: 44370012}
-  overrideForTraining: 0
 --- !u!114 &44370016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,7 +710,6 @@ MonoBehaviour:
   boundingBoxes: []
   margin: 0
   cam: {fileID: 142547656}
-  overrideForTraining: 0
 --- !u!114 &142547651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3719,14 +3717,15 @@ MonoBehaviour:
   dronesToSpawn: 1
   gridController: {fileID: 1700202836}
   observationTexture: 0
-  timeBetweenDecisionsAtInference: 0.33333334
+  timeBetweenDecisionsAtInference: 0.25
   minimumGoodDecisions: 200
   maxDecisions: 50
   currentDecisions: 0
   isTraining: 0
-  inferenceModel: {fileID: 0}
+  inferenceModel: {fileID: 5022602860645237092, guid: a66197e226f8a4fd7b9f9ffc0cc680b9,
+    type: 3}
   resetAllAtInferece: 0
-  logRewards: 1
+  logRewards: 0
   psm: {fileID: 1170272257}
   minPeopleToSpawn: 0
   maxPeopleToSpawn: 0
@@ -4638,7 +4637,6 @@ MonoBehaviour:
   boundingBoxes: []
   margin: 0
   cam: {fileID: 1048241350}
-  overrideForTraining: 0
 --- !u!114 &1085430310 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114166107463087338, guid: 7034de3b42a650b499ebd5c8ad2d2d93,
@@ -5544,7 +5542,6 @@ MonoBehaviour:
   boundingBoxes: []
   margin: 0
   cam: {fileID: 1212442766}
-  overrideForTraining: 0
 --- !u!1 &1214269466
 GameObject:
   m_ObjectHideFlags: 0
@@ -6800,7 +6797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTime: 0
-  t_max: 9
+  t_max: 45
   logMetrics: 0
   plotMaps: 1
   observationTexture: {fileID: 0}
@@ -6854,7 +6851,6 @@ MonoBehaviour:
   boundingBoxes: []
   margin: 0
   cam: {fileID: 1727180094}
-  overrideForTraining: 0
 --- !u!20 &1727180094 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 20213456121506806, guid: d216bb91edc64412987986d3a508227b,

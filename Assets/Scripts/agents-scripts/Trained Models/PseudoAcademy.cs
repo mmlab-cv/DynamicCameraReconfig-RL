@@ -87,17 +87,23 @@ public class PseudoAcademy : MonoBehaviour
         _droneAction[_droneAgents.IndexOf(agent)] = true;
         if (_droneAction.Any(didPerformAction => !didPerformAction))
             return;
-        float gcm = gridController.GlobalCoverageMetric_Current();
-        float pcm = gridController.PeopleCoverageMetric();
-        if (Math.Abs(gcm - 1) < 0.01f || (PersonCollection.Instance.People.Count > 0 && seenPeoplePositions.Count == PersonCollection.Instance.People.Count))
+        if (isTraining)
         {
-            Debug.Log("Reached Objective");
-            foreach (var droneAgent in _droneAgents)
-                droneAgent.Done();
-            Reset();
+            float gcm = gridController.GlobalCoverageMetric_Current();
+            float pcm = gridController.PeopleCoverageMetric();
+            if (Math.Abs(gcm - 1) < 0.01f || (PersonCollection.Instance.People.Count > 0 &&
+                                              seenPeoplePositions.Count == PersonCollection.Instance.People.Count))
+            {
+                Debug.Log("Reached Objective");
+                foreach (var droneAgent in _droneAgents)
+                    droneAgent.Done();
+                Reset();
+            }
+
+            gridController.UpdateGCMValues();
+            gridController.currentTime++;
         }
-        gridController.UpdateGCMValues();
-        gridController.currentTime++;
+
         currentDecisions++;
         if (currentDecisions >= maxDecisions && (isTraining || resetAllAtInferece))
         {
@@ -107,6 +113,15 @@ public class PseudoAcademy : MonoBehaviour
 
         for (int i = 0; i < _droneAction.Length; ++i)
             _droneAction[i] = false;
+    }
+
+    private void FixedUpdate()
+    {
+        if (!isTraining)
+        {
+            gridController.currentTime++;
+            gridController.UpdateGCMValues();
+        }
     }
 
     public void Reset()

@@ -129,7 +129,6 @@ public class CameraControllerFOV : MonoBehaviour
         }
 
         GridController pointer = _gridController;
-
         //substituting each cell which has a higher QoV from the fictious grid to the actual grid
         for (int p1 = 0; p1 < onTheGroundProjections.GetLength(0); p1++)
         {
@@ -142,7 +141,7 @@ public class CameraControllerFOV : MonoBehaviour
                         if (onTheGroundProjections[p1, p2] != Vector3.zero &
                             grid[i, j].Contains(onTheGroundProjections[p1, p2]))
                         {
-                            //proposedGrid[i, j] += SpatialConfidence(projectedRays[p1, p2, 0]);
+                            // proposedGrid[i, j] += SpatialConfidence(projectedRays[p1, p2, 0]);
                             //update the timeConfidenceGridNewObs
                             pointer.UpdateTimeConfidenceGridNewObs(i, j);
                             pointer.UpdateSpatialConfidenceGridNewObs(i, j,
@@ -161,9 +160,9 @@ public class CameraControllerFOV : MonoBehaviour
                             p2 == (onTheGroundProjections.GetLength(1) - 1)
                         ) //when I finished projecting every possible projection in this cell set the qualityofview of the grid to be the highest
                         {
-                            //Debug.Log(onTheGroundProjections[p1, p2]);
+                            // Debug.Log(onTheGroundProjections[p1, p2]);
                             if (grid[i, j].value < proposedGrid[i, j])
-                            {
+                            { 
                                 grid[i, j].value = proposedGrid[i, j];
                             }
                         }

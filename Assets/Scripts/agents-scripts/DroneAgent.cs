@@ -176,9 +176,14 @@ public class DroneAgent : Agent
                 _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().x,
                 _drone.transform.position.y, _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().z);
         else
+        {
             nextPosition = new Vector3(
                 _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().x,
                 _drone.transform.position.y, _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().z);
+            PseudoAcademy.Instance.SendAction(this);
+            return;
+        }
+
         float maxSteps = PseudoAcademy.Instance.minimumGoodDecisions + 1f;
         float gridSize = grid.GetLength(0) * grid.GetLength(1);
         if (_gridController.alfa < 1)

@@ -604,8 +604,8 @@ MonoBehaviour:
   FOV: 100
   distanceDeviation: 2
   maxDistance: 10
-  frameRate: 30
-  showDebugRays: 1
+  frameRate: 24
+  showDebugRays: 0
   personHit: []
   personHitSizeChecked: []
   boundingBoxes: []
