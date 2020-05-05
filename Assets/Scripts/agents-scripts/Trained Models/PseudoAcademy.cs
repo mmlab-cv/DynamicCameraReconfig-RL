@@ -33,6 +33,8 @@ public class PseudoAcademy : MonoBehaviour
     public float timeBetweenDecisionsAtInference = 1f;
     public int minimumGoodDecisions;
     public int maxDecisions;
+    [Tooltip("You should not change this")]
+    public int currentDecisions = 0;
     [HideInInspector] public bool isTraining;
     [SerializeField] private NNModel inferenceModel;
     public bool resetAllAtInferece;
@@ -40,17 +42,21 @@ public class PseudoAcademy : MonoBehaviour
 
     [Header("People")]
     public PeopleSourceMod psm;
-    public int peopleToSpawn;
+    public int minPeopleToSpawn, maxPeopleToSpawn;
     public bool shouldPeopleStandStill;
     [FormerlySerializedAs("seenPeoplePos")] public List<Tuple<int, int>> seenPeoplePositions;
 
-    private void Awake()
+    public void Awake()
     {
         Instance = this;
-        Academy.Instance.OnEnvironmentReset += Reset;
+        isTraining = !inferenceModel;
+        if (isTraining)
+            CustomAwake();
+    }
+    public void CustomAwake()
+    {
         _droneAgents = new List<DroneAgent>();
         seenPeoplePositions = new List<Tuple<int, int>>();
-        isTraining = !inferenceModel;
         for (int i = 0; i < dronesToSpawn; i++)
         {
             DroneAgent drone = Instantiate(dronePrefab).GetComponent<DroneAgent>();
@@ -62,11 +68,12 @@ public class PseudoAcademy : MonoBehaviour
 
         _droneAction = new bool[_droneAgents.Count];
         Reset();
+        Academy.Instance.OnEnvironmentReset += Reset;
     }
 
     void SpawnHuman()
     {
-        psm.transform.position = new Vector3((int)Random.Range(-21f, 21f), 0.05f, (int)Random.Range(-21f, 21f));
+        psm.transform.position =  new Vector3((int)Random.Range(-21f, 21f), 0.05f, (int)Random.Range(-21f, 21f));
         psm.GenerateHuman(shouldPeopleStandStill, true);
     }
 
@@ -80,27 +87,44 @@ public class PseudoAcademy : MonoBehaviour
         _droneAction[_droneAgents.IndexOf(agent)] = true;
         if (_droneAction.Any(didPerformAction => !didPerformAction))
             return;
-
         float gcm = gridController.GlobalCoverageMetric_Current();
         float pcm = gridController.PeopleCoverageMetric();
-        if (Math.Abs(gcm - 1) < 0.01f || seenPeoplePositions.Count == peopleToSpawn)
+        if (Math.Abs(gcm - 1) < 0.01f || (PersonCollection.Instance.People.Count > 0 && seenPeoplePositions.Count == PersonCollection.Instance.People.Count))
+        {
+            Debug.Log("Reached Objective");
             foreach (var droneAgent in _droneAgents)
                 droneAgent.Done();
-
+            Reset();
+        }
+        gridController.UpdateGCMValues();
         gridController.currentTime++;
+        currentDecisions++;
+        if (currentDecisions >= maxDecisions && (isTraining || resetAllAtInferece))
+        {
+            Debug.Log("Max steps reached!");
+            Reset();
+        }
+
         for (int i = 0; i < _droneAction.Length; ++i)
             _droneAction[i] = false;
     }
 
     public void Reset()
     {
+        Debug.Log("Academy Reset");
         seenPeoplePositions.Clear();
+        if (isTraining)
+            gridController.t_max = Int32.MaxValue;
         // gridController.alfa = Random.Range(0, 1);
-        PersonCollection.Instance.KillThemAll();
+        if (isTraining)
+            PersonCollection.Instance.KillThemAll();
+        currentDecisions = 0;
         gridController.Reset();
         foreach (var droneAgent in _droneAgents)
-            droneAgent.AgentReset();
-        for (int i = 0; i < peopleToSpawn; i++)
+            droneAgent.Done();
+        for (int i = 0; i < _droneAction.Length; ++i)
+            _droneAction[i] = false;
+        for (int i = 0; i < Random.Range(minPeopleToSpawn, maxPeopleToSpawn); i++)
             SpawnHuman();
     }
 }

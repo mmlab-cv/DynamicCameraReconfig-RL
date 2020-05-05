@@ -86,6 +86,7 @@ public class GridController : MonoBehaviour
         grid = new Cell[numberOfCellsWidth, numberOfCellsDepth];
         texture2D = new Texture2D(numberOfCellsWidth, numberOfCellsDepth);
         texture2D.filterMode = FilterMode.Point;
+        texture2D.requestedMipmapLevel = 0;
         var myobj = GameObject.CreatePrimitive(PrimitiveType.Plane);
         myobj.name = name;
         myobj.transform.SetParent(transform);
@@ -388,7 +389,7 @@ public class GridController : MonoBehaviour
         }
     }
 
-    public void UpdateGCMValues()
+    public void UpdateGCMValues(bool keepObs = false)
     {
         UpdateTimeConfidenceGrid();
         UpdateObservationGridNewObs();
@@ -415,7 +416,7 @@ public class GridController : MonoBehaviour
 
                     overralConfidenceGrid[i, j].SetValue(overralConfidenceGridNewObs[i, j].value);
                     observationGrid[i, j].SetValue(observationGridNewObs[i, j].value);
-                    //spatialConfidenceGrid[i, j].SetValue(spatialConfidenceGridNewObs[i, j].value);
+                    spatialConfidenceGrid[i, j].SetValue(spatialConfidenceGridNewObs[i, j].value);
 
                     //Debug.Log("newobs");
                 }
@@ -470,6 +471,7 @@ public class GridController : MonoBehaviour
         totalPeople.Clear();
         groundProjections.Clear();
 
-        ResetNewObs();
+        if (!keepObs)
+            ResetNewObs();
     }
 }

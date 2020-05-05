@@ -9,6 +9,8 @@ public class SourceController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         active = true;
+        if (PseudoAcademy.Instance.isTraining)
+            gameObject.SetActive(false);
 	}
 
     // Update is called once per frame

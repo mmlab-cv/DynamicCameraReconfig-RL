@@ -973,7 +973,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &181220656
 Transform:
   m_ObjectHideFlags: 0
@@ -1099,7 +1099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &245721792
 Transform:
   m_ObjectHideFlags: 0
@@ -1469,7 +1469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &344126651
 Transform:
   m_ObjectHideFlags: 0
@@ -1958,7 +1958,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &488987050
 Transform:
   m_ObjectHideFlags: 0
@@ -2592,7 +2592,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &659277376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3718,16 +3718,18 @@ MonoBehaviour:
     type: 3}
   dronesToSpawn: 1
   gridController: {fileID: 1700202836}
-  observationTexture: 1
-  timeBetweenDecisionsAtInference: 1
-  minimumGoodDecisions: 8
-  maxDecisions: 25
+  observationTexture: 0
+  timeBetweenDecisionsAtInference: 0.33333334
+  minimumGoodDecisions: 200
+  maxDecisions: 50
+  currentDecisions: 0
   isTraining: 0
   inferenceModel: {fileID: 0}
   resetAllAtInferece: 0
-  logRewards: 0
+  logRewards: 1
   psm: {fileID: 1170272257}
-  peopleToSpawn: 5
+  minPeopleToSpawn: 0
+  maxPeopleToSpawn: 0
   shouldPeopleStandStill: 1
 --- !u!4 &882349351
 Transform:
@@ -6008,7 +6010,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1481484757
 Transform:
   m_ObjectHideFlags: 0
@@ -6516,6 +6518,11 @@ PrefabInstance:
       propertyPath: enableDataSave
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
+        type: 3}
+      propertyPath: _gridcontroller
+      value: 
+      objectReference: {fileID: 1700202836}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fe64435de0b4ea45967a9b548d45fbd, type: 3}
 --- !u!4 &1644685051 stripped
@@ -6745,7 +6752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c644d1dd27e547a4a81988533333fd83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 4
+  size: 1
 --- !u!4 &1700202834
 Transform:
   m_ObjectHideFlags: 0
@@ -6793,7 +6800,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTime: 0
-  t_max: 2147483647
+  t_max: 9
   logMetrics: 0
   plotMaps: 1
   observationTexture: {fileID: 0}
@@ -6808,10 +6815,10 @@ MonoBehaviour:
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
   priorityTexture_prec: {fileID: 0}
-  cellWidth: 12.5
-  cellDepth: 12.5
+  cellWidth: 1
+  cellDepth: 1
   ped_max: 2
-  alfa: 1
+  alfa: 0
   spatialThreshold: 0.2
   GCM: 0
   peopleThreshold: 0.2
@@ -6871,7 +6878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1732289286
 Transform:
   m_ObjectHideFlags: 0
@@ -7719,7 +7726,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1991784932
 Transform:
   m_ObjectHideFlags: 0

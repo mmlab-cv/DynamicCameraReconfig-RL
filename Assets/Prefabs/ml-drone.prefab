@@ -604,14 +604,13 @@ MonoBehaviour:
   FOV: 100
   distanceDeviation: 2
   maxDistance: 10
-  frameRate: 15
+  frameRate: 30
   showDebugRays: 1
   personHit: []
   personHitSizeChecked: []
   boundingBoxes: []
   margin: 0
   cam: {fileID: 2518795894870970084}
-  overrideForTraining: 0
 --- !u!1 &2501227814951827164
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,6 +627,7 @@ GameObject:
   - component: {fileID: 2500447233972743235}
   - component: {fileID: 2500447233972743232}
   - component: {fileID: 2500447232498672916}
+  - component: {fileID: 6030825404798001989}
   m_Layer: 0
   m_Name: ml-drone
   m_TagString: Untagged
@@ -746,7 +746,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   maxStep: 0
-  VisionSize: 1
+  VisionSize: 11
 --- !u!114 &2500447233972743232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,9 +762,9 @@ MonoBehaviour:
   m_BrainParameters:
     vectorObservationSize: 0
     numStackedVectorObservations: 1
-    vectorActionSize: 09000000
+    vectorActionSize: 02000000
     vectorActionDescriptions: []
-    vectorActionSpaceType: 0
+    vectorActionSpaceType: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
@@ -787,3 +787,16 @@ MonoBehaviour:
   sensorName: RenderTextureSensor
   grayscale: 0
   compression: 1
+--- !u!135 &6030825404798001989
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2501227814951827164}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 6.86
+  m_Center: {x: 0, y: -6.37, z: 0}

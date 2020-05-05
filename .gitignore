@@ -10,6 +10,9 @@
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 
+/mlagents-config/*
+!/mlagents-config/sac_trainer_config.yaml
+
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
 

@@ -45,13 +45,13 @@ public class RectangularSource : MonoBehaviour
     }
 
     // Update is called once per frame
-    private int nextGeneration = 0;
+    private float nextGeneration = 0;
     void Update()
     {
-        nextGeneration--;
+        nextGeneration-=Time.deltaTime;
         if (nextGeneration < 0 && targetList.Count > 0)
         {
-            nextGeneration = (int)Random.Range(minTime * frameRate, maxTime * frameRate);
+            nextGeneration = Random.Range(minTime, maxTime);
 
             float randomTarget = Random.value;
             float probability = 0.0f;

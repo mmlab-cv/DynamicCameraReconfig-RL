@@ -21,7 +21,7 @@ public class DroneAgent : Agent
 
     private Rigidbody _rb;
     private GridController _gridController;
-    public int VisionSize = 4;
+    public int VisionSize = 10;
 
     private float m_TimeSinceDecision;
 
@@ -39,28 +39,9 @@ public class DroneAgent : Agent
     public override void InitializeAgent()
     {
         _drone = GetComponent<Rigidbody>();
-
-//        RequestDecision();
     }
 
     #region Helpers
-
-    private const int k_NoAction = 0; // do nothing!
-    private const int k_Up = 1;
-    private const int k_Down = 2;
-    private const int k_Left = 3;
-    private const int k_Right = 4;
-    private const int k_TopRight = 5;
-    private const int k_TopLeft = 6;
-    private const int k_BottomLeft = 7;
-    private const int k_BottomRight = 8;
-
-    float GetCellValue(Cell[,] grid, int x, int y)
-    {
-        if (x < 0 || y < 0 || x >= grid.GetLength(0) || y >= grid.GetLength(1))
-            return 1;
-        return grid[x, y].value;
-    }
 
     (int, int) GetCoords()
     {
@@ -81,45 +62,21 @@ public class DroneAgent : Agent
         return (xCoord, yCoord);
     }
 
-    (int, int) ActionToXY(int action)
+    (int, int) GetRelativeWindowLocationFromActions(float[] act)
     {
-        int x = 0, y = 0;
-        switch (action)
-        {
-            case k_NoAction:
-                x = y = 0;
-                break;
-            case k_Right:
-                x = 1;
-                break;
-            case k_Left:
-                x = -1;
-                break;
-            case k_Up:
-                y = 1;
-                break;
-            case k_Down:
-                y = -1;
-                break;
-            case k_TopRight:
-                x = y = 1;
-                break;
-            case k_TopLeft:
-                x = -1;
-                y = 1;
-                break;
-            case k_BottomLeft:
-                x = y = -1;
-                break;
-            case k_BottomRight:
-                x = 1;
-                y = -1;
-                break;
-            default:
-                throw new ArgumentException("Invalid action value");
-        }
-
+        int x = (int) (1 + Mathf.Clamp(act[0], -1, 1)) * VisionSize;
+        int y = (int) (1 + Mathf.Clamp(act[1], -1, 1)) * VisionSize;
         return (x, y);
+    }
+
+    (int, int) RelativeToAbsolute(int abs_x, int abs_y, int x, int y)
+    {
+        return (x + abs_x - VisionSize / 2, y + abs_y - VisionSize / 2);
+    }
+
+    public override float[] Heuristic()
+    {
+        return new[] {Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")};
     }
 
     #endregion
@@ -145,49 +102,43 @@ public class DroneAgent : Agent
             if (i >= 0 && j >= 0 && i < grid.GetLength(0) &&
                 j < grid.GetLength(0))
                 grid[i, j].UpdateColor();
-        Texture2D texToUpdate = new Texture2D(tex.width, tex.height);
-        Graphics.CopyTexture(tex, texToUpdate);
-        texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
-        DroneAgent[] drones = FindObjectsOfType<DroneAgent>();
-        foreach (DroneAgent drone in drones)
+        Texture2D texToUpdate = new Texture2D(VisionSize, VisionSize);
+        for (int i = 0; i < VisionSize; i++)
         {
-            if (drone != this)
+            for (int j = 0; j < VisionSize; j++)
             {
-                (int x, int y) pos = drone.GetCoords();
-                texToUpdate.SetPixel(pos.x, pos.y, Color.blue);
+                (int x, int y) = RelativeToAbsolute(x_coord, y_coord, i, j);
+                if (x == x_coord && y == y_coord)
+                    texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
+                else if (x < 0 || y < 0 || x >= grid.GetLength(0) || y >= grid.GetLength(1))
+                    texToUpdate.SetPixel(i, j, Color.green);
+                else
+                    texToUpdate.SetPixel(i, j, tex.GetPixel(x, y));
             }
         }
+        // DroneAgent[] drones = FindObjectsOfType<DroneAgent>();
+        // foreach (DroneAgent drone in drones)
+        // {
+        //     if (drone != this)
+        //     {
+        //         (int x, int y) pos = drone.GetCoords();
+        //         texToUpdate.SetPixel(pos.x, pos.y, Color.blue);
+        //     }
+        // }
+        //
+        // foreach (var pos in PseudoAcademy.Instance.seenPeoplePositions)
+        // {
+        //     texToUpdate.SetPixel(pos.Item1, pos.Item2, Color.cyan);
+        // }
 
-        foreach (var pos in PseudoAcademy.Instance.seenPeoplePositions)
-        {
-            texToUpdate.SetPixel(pos.Item1, pos.Item2, Color.cyan);
-        }
-        
         texToUpdate.Apply();
         texToUpdate.filterMode = FilterMode.Point;
         texToUpdate.wrapMode = TextureWrapMode.Clamp;
         Graphics.Blit(texToUpdate, rtsc.renderTexture);
         Destroy(texToUpdate);
-        SetActionMask(GetActionMask(x_coord, y_coord));
-    }
-
-    IEnumerable<int> GetActionMask(int x_coord, int y_coord)
-    {
-        var actionMask = new List<int>();
-        if (x_coord + 1 >= _gridController.priorityGrid.GetLength(0))
-            actionMask.AddRange(new[] {k_Right, k_TopRight, k_BottomRight});
-        if (x_coord - 1 < 0)
-            actionMask.AddRange(new[] {k_Left, k_TopLeft, k_BottomLeft});
-        if (y_coord + 1 >= _gridController.priorityGrid.GetLength(1))
-            actionMask.AddRange(new[] {k_Up, k_TopLeft, k_TopRight});
-        if (y_coord - 1 < 0)
-            actionMask.AddRange(new[] {k_Down, k_BottomLeft, k_BottomRight});
-        return actionMask.Distinct();
     }
 
     private float lastTime;
-
-    private int decisions = 0, requestedDecisions = 0;
 
     private void OnDrawGizmosSelected()
     {
@@ -209,7 +160,7 @@ public class DroneAgent : Agent
 
     public override void AgentAction(float[] vectorAction)
     {
-        (int x, int y) = ActionToXY(Mathf.FloorToInt(vectorAction[0]));
+        (int x, int y) = GetRelativeWindowLocationFromActions(vectorAction);
         (int xCoord, int yCoord) = GetCoords();
         Cell[,] grid;
         if (PseudoAcademy.Instance.observationTexture == PseudoAcademy.TextureToTrain.OverallConfidence)
@@ -217,90 +168,82 @@ public class DroneAgent : Agent
         else
             grid = _gridController.priorityGrid;
 
-        _drone.transform.position = new Vector3(
-            _gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().x,
-            _drone.transform.position.y, _gridController.timeConfidenceGrid[xCoord + x, yCoord + y].GetPosition().z);
+        (int final_x, int final_y) = RelativeToAbsolute(xCoord, yCoord, x, y);
+        final_x = (int) Math.Max(Math.Min(final_x, grid.GetLength(0) - 1), 0);
+        final_y = (int) Math.Max(Math.Min(final_y, grid.GetLength(1) - 1), 0);
+        if (PseudoAcademy.Instance.isTraining)
+            _drone.transform.position = new Vector3(
+                _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().x,
+                _drone.transform.position.y, _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().z);
+        else
+            nextPosition = new Vector3(
+                _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().x,
+                _drone.transform.position.y, _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().z);
         float maxSteps = PseudoAcademy.Instance.minimumGoodDecisions + 1f;
         float gridSize = grid.GetLength(0) * grid.GetLength(1);
         if (_gridController.alfa < 1)
         {
-            float genReward = 1f / (maxSteps + gridSize);
-            if (grid[xCoord + x, yCoord + y].value > 0)
-                AddReward(-genReward);
-            else if (grid[xCoord + x, yCoord + y].value < 0.1)
-                AddReward(genReward);
-            if (decisions > gridSize)
-                AddReward(-genReward);
+            float gcm_t = _gridController.GlobalCoverageMetric_Current();
             _ccfov.Project();
-            float gcm = _gridController.GlobalCoverageMetric_Current();
-            if (Math.Abs(gcm - 1) < 0.01f)
+            _gridController.UpdateGCMValues(true);
+            float gcm_t1 = _gridController.GlobalCoverageMetric_Current();
+            float genReward = 1f / (maxSteps + gridSize);
+            if (PseudoAcademy.Instance.logRewards)
+                Debug.Log("Delta GCM: " + (gcm_t1 - gcm_t));
+            AddReward(gcm_t1 - gcm_t);
+            // if (gcm_t1-gcm_t < 0)//grid[xCoord + x, yCoord + y].value > 0)//drone si sposta su una cella verde
+            //     AddReward(-genReward);
+            // else if (gcm_t1 - gcm_t > 0) //grid[xCoord + x, yCoord + y].value < 0.1)//drone si sposta su una cella rossa
+            //     AddReward(genReward);
+            // else if (gcm_t1-gcm_t == 0)
+            //     AddReward(-genReward/2f);
+            // if (PseudoAcademy.Instance.currentDecisions > gridSize)
+            //     AddReward(-genReward);
+
+            if (Math.Abs(gcm_t1 - 1) < 0.01f)
             {
-                AddReward(1 - genReward * gridSize);
+                // AddReward(1 - genReward * gridSize);
                 Done();
             }
         }
         else
         {
             _ccfov.Project();
-            if (_ccfov.personHit.Count > 0)
+            var pos = new Tuple<int, int>(xCoord + x, yCoord + y);
+            if (_ccfov.personHit.Count > 0 && !PseudoAcademy.Instance.seenPeoplePositions.Contains(pos))
             {
-                var pos = new Tuple<int, int>(xCoord + x, yCoord + y);
-                if (!PseudoAcademy.Instance.seenPeoplePositions.Contains(pos))
+                for (int i = 0; i < _ccfov.personHit.Count; i++)
                 {
                     PseudoAcademy.Instance.seenPeoplePositions.Add(pos);
-                    AddReward(1f/PseudoAcademy.Instance.peopleToSpawn);
+                    AddReward(1f / PersonCollection.Instance.People.Count);
                 }
             }
             else
             {
-                AddReward(-1f/PseudoAcademy.Instance.maxDecisions);
+                AddReward(-1f / PseudoAcademy.Instance.maxDecisions);
             }
         }
-        
 
 
-        _gridController.UpdateGCMValues(); //We force the update of the values 
+        _gridController.UpdateGCMValues(true); //We force the update of the values 
 
-        
+
         if (PseudoAcademy.Instance.logRewards)
-            Debug.Log("Agent " + name + " step " + decisions + ": Reward " + GetCumulativeReward() + "\nGCM: " + _gridController.GlobalCoverageMetric_Current());
+            Debug.Log("Agent " + name + " step " + PseudoAcademy.Instance.currentDecisions + ": Reward " +
+                      GetCumulativeReward() + "\nGCM: " +
+                      _gridController.GlobalCoverageMetric_Current());
 
         PseudoAcademy.Instance.SendAction(this);
-        if (decisions >= PseudoAcademy.Instance.maxDecisions && (PseudoAcademy.Instance.isTraining || PseudoAcademy.Instance.resetAllAtInferece))
-            PseudoAcademy.Instance.Reset();
-        decisions++;
-    }
-
-    public override float[]
-        Heuristic() // this method allows us to use the drone with the keyboard to check that everything is working
-    {
-        float[] ret = {k_NoAction};
-        if (Input.GetKey(KeyCode.D))
-            ret = new float[] {k_Right};
-        if (Input.GetKey(KeyCode.W))
-            ret = new float[] {k_Up};
-        if (Input.GetKey(KeyCode.A))
-            ret = new float[] {k_Left};
-        if (Input.GetKey(KeyCode.X))
-            ret = new float[] {k_Down};
-        if (Input.GetKey(KeyCode.E))
-            ret = new float[] {k_TopRight};
-        if (Input.GetKey(KeyCode.Q))
-            ret = new float[] {k_TopLeft};
-        if (Input.GetKey(KeyCode.Z))
-            ret = new float[] {k_BottomLeft};
-        if (Input.GetKey(KeyCode.C))
-            ret = new float[] {k_BottomRight};
-        (int x, int y) = GetCoords();
-        if (GetActionMask(x, y).Contains((int) ret[0]))
-            ret = new float[] {k_NoAction};
-        return ret;
     }
 
     public void FixedUpdate()
     {
         WaitTimeInference();
     }
+
+    private Vector3 nextPosition;
+    private float movementForwardSpeedMission = 20;
+    private bool mission = false;
 
     private void WaitTimeInference()
     {
@@ -315,11 +258,25 @@ public class DroneAgent : Agent
             {
                 m_TimeSinceDecision = 0f;
                 if (PseudoAcademy.Instance.CanDecide(this))
+                {
                     RequestDecision();
+                    mission = true;
+                }
             }
             else
             {
                 m_TimeSinceDecision += Time.fixedDeltaTime;
+            }
+
+            if (mission)
+            {
+                _drone.transform.position = Vector3.MoveTowards(_drone.transform.position, nextPosition,
+                    movementForwardSpeedMission * Time.fixedDeltaTime);
+                var dist = Vector3.Distance(_drone.transform.position, nextPosition);
+                if (dist == 0)
+                {
+                    mission = false;
+                }
             }
         }
     }
@@ -328,7 +285,6 @@ public class DroneAgent : Agent
     {
         if (!PseudoAcademy.Instance.isTraining && !PseudoAcademy.Instance.resetAllAtInferece)
             return;
-        decisions = requestedDecisions = 0;
         transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));
         if (PseudoAcademy.Instance.logRewards)
             Debug.Log("#################### AGENT " + name + " RESET ####################");

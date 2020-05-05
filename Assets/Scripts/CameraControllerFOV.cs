@@ -222,69 +222,76 @@ public class CameraControllerFOV : MonoBehaviour
         {
             for (int j = 0; j < res.GetLength(1); j++)
             {
-                if (results[c].collider)
+                try
                 {
-                    res[i, j, 0] = results[c].point;
-
-                    if (results[c].transform.CompareTag("Person"))
+                    if (results[c].collider)
                     {
-                        if (personHit.Contains(results[c].transform.gameObject) != true)
+                        res[i, j, 0] = results[c].point;
+
+                        if (results[c].transform.CompareTag("Person"))
                         {
-                            personHit.Add(results[c].transform.gameObject);
-                            Bounds b = results[c].transform.GetChild(3).GetComponent<Renderer>().bounds;
-                            //The object is behind us
-                            if (cam.WorldToScreenPoint(b.center).z < 0) continue;
-                            //All 8 vertices of the bounds
-                            pts[0] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
-                                b.center.y + b.extents.y, b.center.z + b.extents.z));
-                            pts[1] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
-                                b.center.y + b.extents.y, b.center.z - b.extents.z));
-                            pts[2] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
-                                b.center.y - b.extents.y, b.center.z + b.extents.z));
-                            pts[3] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
-                                b.center.y - b.extents.y, b.center.z - b.extents.z));
-                            pts[4] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
-                                b.center.y + b.extents.y, b.center.z + b.extents.z));
-                            pts[5] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
-                                b.center.y + b.extents.y, b.center.z - b.extents.z));
-                            pts[6] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
-                                b.center.y - b.extents.y, b.center.z + b.extents.z));
-                            pts[7] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
-                                b.center.y - b.extents.y, b.center.z - b.extents.z));
-                            //Get them in GUI space
-                            for (int ii = 0; ii < pts.Length; ii++) pts[ii].y = Screen.height - pts[ii].y;
-                            //Calculate the min and max positions
-                            Vector3 min = pts[0];
-                            Vector3 max = pts[0];
-                            for (int ii = 1; ii < pts.Length; ii++)
+                            if (personHit.Contains(results[c].transform.gameObject) != true)
                             {
-                                min = Vector3.Min(min, pts[ii]);
-                                max = Vector3.Max(max, pts[ii]);
-                            }
-
-                            //Construct a rect of the min and max positions and apply some margin
-                            test = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
-                            test.xMin -= margin;
-                            test.xMax += margin;
-                            test.yMin -= margin;
-                            test.yMax += margin;
-
-                            if (test.height > 25 && test.width > 25)
-                            {
-                                personHitSizeChecked.Add(results[c].transform.gameObject);
-                                boundingBoxes.Add(test);
-                                res[i, j, 1] = new Vector3(1, 1, 1);
-
-                                if (_gridController.people.Contains(results[c].transform.gameObject) != true)
+                                personHit.Add(results[c].transform.gameObject);
+                                Bounds b = results[c].transform.GetChild(3).GetComponent<Renderer>().bounds;
+                                //The object is behind us
+                                if (cam.WorldToScreenPoint(b.center).z < 0) continue;
+                                //All 8 vertices of the bounds
+                                pts[0] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
+                                    b.center.y + b.extents.y, b.center.z + b.extents.z));
+                                pts[1] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
+                                    b.center.y + b.extents.y, b.center.z - b.extents.z));
+                                pts[2] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
+                                    b.center.y - b.extents.y, b.center.z + b.extents.z));
+                                pts[3] = cam.WorldToScreenPoint(new Vector3(b.center.x + b.extents.x,
+                                    b.center.y - b.extents.y, b.center.z - b.extents.z));
+                                pts[4] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
+                                    b.center.y + b.extents.y, b.center.z + b.extents.z));
+                                pts[5] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
+                                    b.center.y + b.extents.y, b.center.z - b.extents.z));
+                                pts[6] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
+                                    b.center.y - b.extents.y, b.center.z + b.extents.z));
+                                pts[7] = cam.WorldToScreenPoint(new Vector3(b.center.x - b.extents.x,
+                                    b.center.y - b.extents.y, b.center.z - b.extents.z));
+                                //Get them in GUI space
+                                for (int ii = 0; ii < pts.Length; ii++) pts[ii].y = Screen.height - pts[ii].y;
+                                //Calculate the min and max positions
+                                Vector3 min = pts[0];
+                                Vector3 max = pts[0];
+                                for (int ii = 1; ii < pts.Length; ii++)
                                 {
-                                    _gridController.people.Add(results[c].transform.gameObject);
+                                    min = Vector3.Min(min, pts[ii]);
+                                    max = Vector3.Max(max, pts[ii]);
+                                }
+
+                                //Construct a rect of the min and max positions and apply some margin
+                                test = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+                                test.xMin -= margin;
+                                test.xMax += margin;
+                                test.yMin -= margin;
+                                test.yMax += margin;
+
+                                if (test.height > 25 && test.width > 25)
+                                {
+                                    personHitSizeChecked.Add(results[c].transform.gameObject);
+                                    boundingBoxes.Add(test);
+                                    res[i, j, 1] = new Vector3(1, 1, 1);
+
+                                    if (_gridController.people.Contains(results[c].transform.gameObject) != true)
+                                    {
+                                        _gridController.people.Add(results[c].transform.gameObject);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (showDebugRays)
-                        Debug.DrawLine(transform.position, results[c].point);
+                        if (showDebugRays)
+                            Debug.DrawLine(transform.position, results[c].point);
+                    }
+                }
+                catch
+                {
+                    // ignored
                 }
 
                 c++;
@@ -379,11 +386,9 @@ public class CameraControllerFOV : MonoBehaviour
     }
 
     private float timeSinceLastFrame = 0;
-    
-    [SerializeField]private bool overrideForTraining;
-    private void Update()
+    private void FixedUpdate()
     {
-        if (overrideForTraining)
+        if (PseudoAcademy.Instance && PseudoAcademy.Instance.isTraining)
             return;
         if (timeSinceLastFrame >= (1f / frameRate))
         {

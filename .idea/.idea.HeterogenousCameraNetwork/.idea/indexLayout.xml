@@ -3,6 +3,7 @@
   <component name="ContentModelUserStore">
     <attachedFolders />
     <explicitIncludes>
+      <Path>Assets</Path>
       <Path>Library/PackageCache/com.unity.barracuda@0.6.0-preview</Path>
       <Path>Library/PackageCache/com.unity.burst@1.1.1</Path>
       <Path>Library/PackageCache/com.unity.mathematics@1.1.0</Path>
@@ -19,6 +20,7 @@
       <Path>Library</Path>
       <Path>Logs</Path>
       <Path>Python</Path>
+      <Path>Temp</Path>
       <Path>mlagents-config</Path>
       <Path>obj</Path>
     </explicitExcludes>

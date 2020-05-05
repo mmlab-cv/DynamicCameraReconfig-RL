@@ -9,12 +9,14 @@ public class CamerasManager : MonoBehaviour
     public bool enableVideoSave;
     public bool enableDataSave;
     public bool limitTrajectories;
+    [SerializeField]
 	private int maxTrajectories = 400;
 
     public string folder = "AcquisizioneVideo";
     public int frameRate = 25;
 
     public List<CameraType> cameras = new List<CameraType>();
+    public GridController _gridcontroller;
 
     private GameObject[] persone;
     private GameObject[] targetsCamera;
@@ -33,6 +35,8 @@ public class CamerasManager : MonoBehaviour
     // inizializzazione
     void Start()
     {
+        if (PseudoAcademy.Instance.isTraining)
+            enabled = false;
         sceneName = SceneManager.GetActiveScene().name;
 
         //UNCOMMENT HERE
@@ -66,7 +70,11 @@ public class CamerasManager : MonoBehaviour
                 }
             }
         }
+
+        Time.timeScale = 100f;
     }
+
+    private bool init = false;
 
     // funzione chiamata dopo Update()
     void LateUpdate()
@@ -252,6 +260,23 @@ public class CamerasManager : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if (!init && PersonCollection.Instance.People.Count > 30)
+        {
+            init = true;
+            Time.timeScale = 1f;
+            PseudoAcademy.Instance.CustomAwake();
+            Debug.Log("STARTED");
+        }
+        else if (init && limitTrajectories && PersonCollection.Instance.People.Exists(x => x.name.Contains(maxTrajectories.ToString())))
+        {
+            Debug.Log("DONE");
+            _gridcontroller.UpdateGCMValues();
+            Debug.Log("GCM: " + _gridcontroller.GCM);
+            #if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+            #endif
         }
     }
 

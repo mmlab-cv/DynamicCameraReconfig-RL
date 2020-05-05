@@ -23,7 +23,7 @@ public class Grid : MonoBehaviour
         return result;
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         for (float x = 0; x < 40; x += size)
