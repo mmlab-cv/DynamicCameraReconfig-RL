@@ -115,12 +115,21 @@ public class PseudoAcademy : MonoBehaviour
             _droneAction[i] = false;
     }
 
+    private float timeSinceLast = 0;
     private void FixedUpdate()
     {
         if (!isTraining)
         {
-            gridController.currentTime++;
-            gridController.UpdateGCMValues();
+            if (timeSinceLast <= 0)
+            {
+                gridController.currentTime++;
+                gridController.UpdateGCMValues();
+                timeSinceLast = 1f / 15f;
+            }
+            else
+            {
+                timeSinceLast -= Time.fixedDeltaTime;
+            }
         }
     }
 

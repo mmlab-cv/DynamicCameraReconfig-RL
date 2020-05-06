@@ -129,6 +129,7 @@ public class CameraControllerFOV : MonoBehaviour
         }
 
         GridController pointer = _gridController;
+        // int changed = 0;
         //substituting each cell which has a higher QoV from the fictious grid to the actual grid
         for (int p1 = 0; p1 < onTheGroundProjections.GetLength(0); p1++)
         {
@@ -141,7 +142,7 @@ public class CameraControllerFOV : MonoBehaviour
                         if (onTheGroundProjections[p1, p2] != Vector3.zero &
                             grid[i, j].Contains(onTheGroundProjections[p1, p2]))
                         {
-                            // proposedGrid[i, j] += SpatialConfidence(projectedRays[p1, p2, 0]);
+                            proposedGrid[i, j] += SpatialConfidence(projectedRays[p1, p2, 0]);
                             //update the timeConfidenceGridNewObs
                             pointer.UpdateTimeConfidenceGridNewObs(i, j);
                             pointer.UpdateSpatialConfidenceGridNewObs(i, j,
@@ -162,14 +163,16 @@ public class CameraControllerFOV : MonoBehaviour
                         {
                             // Debug.Log(onTheGroundProjections[p1, p2]);
                             if (grid[i, j].value < proposedGrid[i, j])
-                            { 
+                            {
                                 grid[i, j].value = proposedGrid[i, j];
+                                // changed++;
                             }
                         }
                     }
                 }
             }
         }
+        // Debug.Log(changed);
     }
 
     public Vector3[,,]
@@ -303,8 +306,8 @@ public class CameraControllerFOV : MonoBehaviour
     }
 
 
-    private void OnGUI()
-    {
+    // private void OnGUI()
+    // {
         ////GUI.Label(test, "test");
         ////GUI.DrawTexture(test, WhiteTexture);
         //foreach (var currHit in personHit)
@@ -357,11 +360,11 @@ public class CameraControllerFOV : MonoBehaviour
         //    }
 
         //}
-        foreach (var box in boundingBoxes)
-        {
-            GUI.Box(box, "yes");
-        }
-    }
+    //     foreach (var box in boundingBoxes)
+    //     {
+    //         GUI.Box(box, "yes");
+    //     }
+    // }
 
 
     private float

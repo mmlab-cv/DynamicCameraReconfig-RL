@@ -3722,10 +3722,10 @@ MonoBehaviour:
   maxDecisions: 50
   currentDecisions: 0
   isTraining: 0
-  inferenceModel: {fileID: 5022602860645237092, guid: a66197e226f8a4fd7b9f9ffc0cc680b9,
+  inferenceModel: {fileID: 5022602860645237092, guid: 6b3409d890ee34e59b169ef124965541,
     type: 3}
   resetAllAtInferece: 0
-  logRewards: 0
+  logRewards: 1
   psm: {fileID: 1170272257}
   minPeopleToSpawn: 0
   maxPeopleToSpawn: 0
@@ -6812,8 +6812,8 @@ MonoBehaviour:
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
   priorityTexture_prec: {fileID: 0}
-  cellWidth: 1
-  cellDepth: 1
+  cellWidth: 3
+  cellDepth: 3
   ped_max: 2
   alfa: 0
   spatialThreshold: 0.2
