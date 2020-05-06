@@ -56,7 +56,7 @@ public class GridController : MonoBehaviour
     public float spatialThreshold = 0.2f;
 
     public float GCM;
-    float PCM;
+    public float PCM;
     private int numberOfCellsWidth, numberOfCellsDepth;
 
     public float peopleThreshold = 0.2f;
@@ -470,8 +470,6 @@ public class GridController : MonoBehaviour
         people.Clear();
         totalPeople.Clear();
         groundProjections.Clear();
-
-        if (!keepObs)
-            ResetNewObs();
+        ResetNewObs();
     }
 }

@@ -272,8 +272,8 @@ public class CamerasManager : MonoBehaviour
         else if (init && limitTrajectories && PersonCollection.Instance.People.Exists(x => x.name.Contains(maxTrajectories.ToString())))
         {
             Debug.Log("DONE");
-            _gridcontroller.UpdateGCMValues();
-            Debug.Log("GCM: " + _gridcontroller.GCM);
+            Debug.Log("GCM avg: " + (PseudoAcademy.Instance.TotalGCM/_gridcontroller.currentTime));
+            Debug.Log("PCM avg: " + (PseudoAcademy.Instance.TotalPCM/_gridcontroller.currentTime));
             #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
             #endif

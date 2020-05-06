@@ -116,6 +116,7 @@ public class PseudoAcademy : MonoBehaviour
     }
 
     private float timeSinceLast = 0;
+    public float TotalGCM = 0, TotalPCM = 0;
     private void FixedUpdate()
     {
         if (!isTraining)
@@ -124,6 +125,8 @@ public class PseudoAcademy : MonoBehaviour
             {
                 gridController.currentTime++;
                 gridController.UpdateGCMValues();
+                TotalGCM += gridController.GCM;
+                TotalPCM += gridController.PCM;
                 timeSinceLast = 1f / 15f;
             }
             else
