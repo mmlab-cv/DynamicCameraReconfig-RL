@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -17,6 +17,7 @@ public class CamerasManager : MonoBehaviour
 
     public List<CameraType> cameras = new List<CameraType>();
     public GridController _gridcontroller;
+    public GameObject[] ObjectsToEnableWithSimulation;
 
     private GameObject[] persone;
     private GameObject[] targetsCamera;
@@ -267,13 +268,18 @@ public class CamerasManager : MonoBehaviour
             init = true;
             Time.timeScale = 1f;
             PseudoAcademy.Instance.CustomAwake();
+            foreach (GameObject o in ObjectsToEnableWithSimulation)
+            {
+                o.SetActive(true);
+            }
             Debug.Log("STARTED");
         }
         else if (init && limitTrajectories && PersonCollection.Instance.People.Exists(x => x.name.Contains(maxTrajectories.ToString())))
         {
             Debug.Log("DONE");
-            Debug.Log("GCM avg: " + (PseudoAcademy.Instance.TotalGCM/_gridcontroller.currentTime));
-            Debug.Log("PCM avg: " + (PseudoAcademy.Instance.TotalPCM/_gridcontroller.currentTime));
+            string results =
+                $"α={_gridcontroller.alfa} GCM avg: {(PseudoAcademy.Instance.TotalGCM / _gridcontroller.currentTime)} PCM avg: {PseudoAcademy.Instance.TotalPCM / _gridcontroller.currentTime}";
+            Debug.Log(results);
             #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
             #endif

@@ -134,6 +134,8 @@ public class Person : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Mathf.Abs(transform.position.x) > 100 || Mathf.Abs(transform.position.z) > 100)
+            enabled = false;
         if (!animator)
         {
             animator = GetComponent<Animator>();

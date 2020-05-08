@@ -340,7 +340,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44370007}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5c67f3644927344fafe5f62c8b1eec7, type: 3}
   m_Name: 
@@ -729,7 +729,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 142547648}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5c67f3644927344fafe5f62c8b1eec7, type: 3}
   m_Name: 
@@ -3714,15 +3714,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dronePrefab: {fileID: 2501227814951827164, guid: 78614221b4c86469c8c92a33915d6b87,
     type: 3}
-  dronesToSpawn: 1
+  dronesToSpawn: 2
   gridController: {fileID: 1700202836}
-  observationTexture: 0
+  observationTexture: 1
   timeBetweenDecisionsAtInference: 0.25
   minimumGoodDecisions: 200
   maxDecisions: 50
   currentDecisions: 0
   isTraining: 0
-  inferenceModel: {fileID: 5022602860645237092, guid: 6b3409d890ee34e59b169ef124965541,
+  inferenceModel: {fileID: 5022602860645237092, guid: a66197e226f8a4fd7b9f9ffc0cc680b9,
     type: 3}
   resetAllAtInferece: 0
   logRewards: 1
@@ -3730,6 +3730,8 @@ MonoBehaviour:
   minPeopleToSpawn: 0
   maxPeopleToSpawn: 0
   shouldPeopleStandStill: 1
+  TotalGCM: 0
+  TotalPCM: 0
 --- !u!4 &882349351
 Transform:
   m_ObjectHideFlags: 0
@@ -6507,6 +6509,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
         type: 3}
+      propertyPath: ObjectsToEnableWithSimulation.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
+        type: 3}
       propertyPath: enableVideoSave
       value: 0
       objectReference: {fileID: 0}
@@ -6520,6 +6527,26 @@ PrefabInstance:
       propertyPath: _gridcontroller
       value: 
       objectReference: {fileID: 1700202836}
+    - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
+        type: 3}
+      propertyPath: ObjectsToEnableWithSimulation.Array.data[0]
+      value: 
+      objectReference: {fileID: 1048241347}
+    - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
+        type: 3}
+      propertyPath: ObjectsToEnableWithSimulation.Array.data[1]
+      value: 
+      objectReference: {fileID: 1212442763}
+    - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
+        type: 3}
+      propertyPath: ObjectsToEnableWithSimulation.Array.data[2]
+      value: 
+      objectReference: {fileID: 44370007}
+    - target: {fileID: 114754418557240270, guid: 1fe64435de0b4ea45967a9b548d45fbd,
+        type: 3}
+      propertyPath: ObjectsToEnableWithSimulation.Array.data[3]
+      value: 
+      objectReference: {fileID: 142547648}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fe64435de0b4ea45967a9b548d45fbd, type: 3}
 --- !u!4 &1644685051 stripped
@@ -6812,13 +6839,14 @@ MonoBehaviour:
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
   priorityTexture_prec: {fileID: 0}
-  cellWidth: 3
-  cellDepth: 3
+  cellWidth: 1
+  cellDepth: 1
   ped_max: 2
-  alfa: 0
-  spatialThreshold: 0.2
+  alfa: 1
+  spatialThreshold: 0.01
   GCM: 0
-  peopleThreshold: 0.2
+  PCM: 0
+  peopleThreshold: 0.01
   people: []
 --- !u!1 &1727180088 stripped
 GameObject:
