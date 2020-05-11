@@ -2740,7 +2740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!124 &668102472
 Behaviour:
   m_ObjectHideFlags: 0
@@ -3722,13 +3722,12 @@ MonoBehaviour:
   maxDecisions: 50
   currentDecisions: 0
   isTraining: 0
-  inferenceModel: {fileID: 5022602860645237092, guid: a66197e226f8a4fd7b9f9ffc0cc680b9,
-    type: 3}
+  inferenceModel: {fileID: 0}
   resetAllAtInferece: 0
   logRewards: 1
   psm: {fileID: 1170272257}
-  minPeopleToSpawn: 0
-  maxPeopleToSpawn: 0
+  minPeopleToSpawn: 1
+  maxPeopleToSpawn: 20
   shouldPeopleStandStill: 1
   TotalGCM: 0
   TotalPCM: 0
@@ -5918,7 +5917,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1467812011
 Transform:
   m_ObjectHideFlags: 0
@@ -6839,14 +6838,14 @@ MonoBehaviour:
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
   priorityTexture_prec: {fileID: 0}
-  cellWidth: 1
-  cellDepth: 1
+  cellWidth: 3
+  cellDepth: 3
   ped_max: 2
-  alfa: 1
-  spatialThreshold: 0.01
+  alfa: 0
+  spatialThreshold: 0.2
   GCM: 0
   PCM: 0
-  peopleThreshold: 0.01
+  peopleThreshold: 0.2
   people: []
 --- !u!1 &1727180088 stripped
 GameObject:

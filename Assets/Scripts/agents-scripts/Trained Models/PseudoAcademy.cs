@@ -89,10 +89,7 @@ public class PseudoAcademy : MonoBehaviour
             return;
         if (isTraining)
         {
-            float gcm = gridController.GlobalCoverageMetric_Current();
-            float pcm = gridController.PeopleCoverageMetric();
-            if (Math.Abs(gcm - 1) < 0.01f || (PersonCollection.Instance.People.Count > 0 &&
-                                              seenPeoplePositions.Count == PersonCollection.Instance.People.Count))
+            if (Math.Abs(gridController.Priority_Current() - 1) < 0.01f)
             {
                 Debug.Log("Reached Objective");
                 foreach (var droneAgent in _droneAgents)
@@ -141,10 +138,12 @@ public class PseudoAcademy : MonoBehaviour
         Debug.Log("Academy Reset");
         seenPeoplePositions.Clear();
         if (isTraining)
+        {
             gridController.t_max = Int32.MaxValue;
-        // gridController.alfa = Random.Range(0, 1);
-        if (isTraining)
+            // gridController.alfa = Random.Range(0f, 1f);
             PersonCollection.Instance.KillThemAll();
+        }
+
         currentDecisions = 0;
         gridController.Reset();
         foreach (var droneAgent in _droneAgents)

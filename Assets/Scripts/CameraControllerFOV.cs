@@ -100,18 +100,21 @@ public class CameraControllerFOV : MonoBehaviour
         Bounds map = _boxCollider.bounds;
         Bounds mapVolume = _mapController.mapBounds;
         Vector3[,] onTheGroundProjections = new Vector3[projectedRays.GetLength(0), projectedRays.GetLength(1)];
+        //default values for projections are (0,0,0)
+        int min_i = onTheGroundProjections.GetLength(0), max_i = 0;
+        int min_j = onTheGroundProjections.GetLength(0), max_j = 0;
         for (int i = 0; i < onTheGroundProjections.GetLength(0); i++)
         {
             for (int j = 0; j < onTheGroundProjections.GetLength(1); j++)
             {
                 if (mapVolume.Contains(projectedRays[i, j, 0]))
                 {
+                    min_i = Mathf.Min(min_i, i);
+                    min_j = Mathf.Min(min_j, j);
+                    max_i = Mathf.Max(max_i, i);
+                    max_j = Mathf.Max(max_j, j);
                     //Debug.Log(projectedRays[i, j, 0]);
                     onTheGroundProjections[i, j] = map.ClosestPoint(projectedRays[i, j, 0]);
-                }
-                else
-                {
-                    onTheGroundProjections[i, j] = Vector3.zero;
                 }
             }
         }
@@ -120,20 +123,13 @@ public class CameraControllerFOV : MonoBehaviour
 
         //declaring a fictious grid and initializing it, for quality of view of this camera
         float[,] proposedGrid = new float[grid.GetLength(0), grid.GetLength(1)];
-        for (int i = 0; i < proposedGrid.GetLength(0); i++)
-        {
-            for (int j = 0; j < proposedGrid.GetLength(1); j++)
-            {
-                proposedGrid[i, j] = 0f;
-            }
-        }
+        //default values for proposedGris is 0
 
         GridController pointer = _gridController;
-        // int changed = 0;
         //substituting each cell which has a higher QoV from the fictious grid to the actual grid
-        for (int p1 = 0; p1 < onTheGroundProjections.GetLength(0); p1++)
+        for (int p1 = min_i; p1 <= max_i; p1++)
         {
-            for (int p2 = 0; p2 < onTheGroundProjections.GetLength(1); p2++)
+            for (int p2 = min_j; p2 <= max_j; p2++)
             {
                 for (int i = 0; i < proposedGrid.GetLength(0); i++)
                 {
@@ -157,22 +153,18 @@ public class CameraControllerFOV : MonoBehaviour
                             }
                         }
 
-                        if (p1 == (onTheGroundProjections.GetLength(0) - 1) &&
-                            p2 == (onTheGroundProjections.GetLength(1) - 1)
-                        ) //when I finished projecting every possible projection in this cell set the qualityofview of the grid to be the highest
-                        {
+                        if (p1 == max_i && p2 == max_j) 
+                        {//when I finished projecting every possible projection in this cell set the qualityofview of the grid to be the highest
                             // Debug.Log(onTheGroundProjections[p1, p2]);
                             if (grid[i, j].value < proposedGrid[i, j])
                             {
                                 grid[i, j].value = proposedGrid[i, j];
-                                // changed++;
                             }
                         }
                     }
                 }
             }
         }
-        // Debug.Log(changed);
     }
 
     public Vector3[,,]

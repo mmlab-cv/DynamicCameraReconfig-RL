@@ -258,6 +258,20 @@ public class GridController : MonoBehaviour
             ); //(GCM + conf / numberOfCellsWidth * numberOfCellsDepth)/(currentTime + 1);
         return gcm_curr;
     }
+    
+    public float Priority_Current()
+    {
+        float curr = 0f;
+        float conf = 0;
+        for (int i = 0; i < numberOfCellsWidth; i++)
+        {
+            for (int j = 0; j < numberOfCellsDepth; j++)
+            {
+                conf += priorityGrid[i, j].value;
+            }
+        }
+        return (conf / (float) (numberOfCellsWidth * numberOfCellsDepth));
+    }
 
     public float PeopleCoverageMetric()
     {
@@ -389,7 +403,7 @@ public class GridController : MonoBehaviour
         }
     }
 
-    public void UpdateGCMValues(bool keepObs = false)
+    public void UpdateGCMValues()
     {
         UpdateTimeConfidenceGrid();
         UpdateObservationGridNewObs();

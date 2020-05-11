@@ -35,7 +35,7 @@ Drone:
     buffer_size: 50000
     max_steps: 10.0e6
     tau: 0.01
-    summary_freq: 100
+    summary_freq: 1000
     time_horizon: 50
     reward_signals:
         extrinsic:

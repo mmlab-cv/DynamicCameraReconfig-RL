@@ -5,12 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class CamerasManager : MonoBehaviour
 {
-
     public bool enableVideoSave;
     public bool enableDataSave;
     public bool limitTrajectories;
-    [SerializeField]
-	private int maxTrajectories = 400;
+    [SerializeField] private int maxTrajectories = 400;
 
     public string folder = "AcquisizioneVideo";
     public int frameRate = 25;
@@ -53,6 +51,7 @@ public class CamerasManager : MonoBehaviour
                 {
                     System.IO.Directory.Delete(folder, true);
                 }
+
                 System.IO.Directory.CreateDirectory(folder);
 
                 // crea una sottocartella per ogni telecamera
@@ -61,11 +60,11 @@ public class CamerasManager : MonoBehaviour
                     if (cameras[i].Camera)
                     {
                         cameras[i].Folder = string.Format("{0}/{1}_{2}x{3}_{4}fps",
-                                                           folder,
-                                                           cameras[i].Name,
-                                                           cameras[i].Camera.rect.width,
-                                                           cameras[i].Camera.rect.height,
-                                                           frameRate);
+                            folder,
+                            cameras[i].Name,
+                            cameras[i].Camera.rect.width,
+                            cameras[i].Camera.rect.height,
+                            frameRate);
                         System.IO.Directory.CreateDirectory(cameras[i].Folder);
                     }
                 }
@@ -86,6 +85,7 @@ public class CamerasManager : MonoBehaviour
             rect = new Rect(0, 0, 1280, 720);
             screenShot = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
         }
+
         if (enableVideoSave)
         {
             // per ogni telecamera
@@ -93,7 +93,6 @@ public class CamerasManager : MonoBehaviour
             {
                 if (cameras[i].Camera)
                 {
-
                     //UNCOMMENT HERE FOR VIDEO SAVING
                     ////RenderTexture rt = new RenderTexture((int)cameras[i].Camera.rect.width, (int)cameras[i].Camera.rect.height, 24);
                     //cameras[i].Camera.targetTexture = rt;
@@ -112,11 +111,19 @@ public class CamerasManager : MonoBehaviour
 
                     if (enableDataSave)
                     {
-                        string fileWorld = string.Format("{0}/../../Python/" + sceneName + "_" + "World" + System.DateTime.Now.ToString("_yyyy-MM-dd_HH") + ".txt", cameras[i].Folder);
+                        string fileWorld =
+                            string.Format(
+                                "{0}/../../Python/" + sceneName + "_" + "World" +
+                                System.DateTime.Now.ToString("_yyyy-MM-dd_HH") + ".txt", cameras[i].Folder);
                         //UNCOMMENT HERE
-                        string fileHead = string.Format("{0}/../../Python/" + sceneName + "_" + cameras[i].Name + "_head" + System.DateTime.Now.ToString("_yyyy-MM-dd_HH") + ".txt", cameras[i].Folder);
-                        string fileFeet = string.Format("{0}/../../Python/" + sceneName + "_" + cameras[i].Name + "_feet" + System.DateTime.Now.ToString("_yyyy-MM-dd_HH") + ".txt", cameras[i].Folder);
-
+                        string fileHead =
+                            string.Format(
+                                "{0}/../../Python/" + sceneName + "_" + cameras[i].Name + "_head" +
+                                System.DateTime.Now.ToString("_yyyy-MM-dd_HH") + ".txt", cameras[i].Folder);
+                        string fileFeet =
+                            string.Format(
+                                "{0}/../../Python/" + sceneName + "_" + cameras[i].Name + "_feet" +
+                                System.DateTime.Now.ToString("_yyyy-MM-dd_HH") + ".txt", cameras[i].Folder);
 
 
                         //      if (!System.IO.File.Exists(fileNameText)) {
@@ -139,12 +146,12 @@ public class CamerasManager : MonoBehaviour
                             //Debug.Log(person.name);
                             //Debug.Log(maxTrajectories.ToString());
                             //If a maximum number of trajectories has been reached
-                            #if UNITY_EDITOR
+#if UNITY_EDITOR
                             if (limitTrajectories && person.name.Contains(maxTrajectories.ToString()))
                             {
                                 EditorApplication.isPlaying = false;
                             }
-                            #endif
+#endif
                             Transform targetCam = person.transform.Find("TargetCamera");
                             Transform head = person.transform.Find("Root");
                             while (head != null && head.gameObject.name != "Head")
@@ -157,6 +164,7 @@ public class CamerasManager : MonoBehaviour
                                 {
                                     head = head.GetChild(0);
                                 }
+
                                 //Debug.Log(head.gameObject.name);
                             }
                             //Transform root = person.transform.Find("Root");
@@ -208,54 +216,63 @@ public class CamerasManager : MonoBehaviour
                                 // Create just one world coordinate file
                                 if (i == 0)
                                 {
-                                    System.IO.File.AppendAllText(fileWorld, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n",
-                                       Time.frameCount + 15, person.GetComponent<Person>().PersonID,
-                                       targetCam.position.x, targetCam.position.y, targetCam.position.z,
-                                       head.position.x, head.position.y, head.position.z,
-                                       person.transform.parent.GetComponent<Group>().GroupID));
+                                    System.IO.File.AppendAllText(fileWorld, string.Format(
+                                        "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n",
+                                        Time.frameCount + 15, person.GetComponent<Person>().PersonID,
+                                        targetCam.position.x, targetCam.position.y, targetCam.position.z,
+                                        head.position.x, head.position.y, head.position.z,
+                                        person.transform.parent.GetComponent<Group>().GroupID));
                                 }
+
                                 //UNCOMMENT HERE
                                 System.IO.File.AppendAllText(fileHead, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPosHead.x, screenPosHead.y, person.transform.parent.GetComponent<Group>().GroupID));
+                                    Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPosHead.x,
+                                    screenPosHead.y, person.transform.parent.GetComponent<Group>().GroupID));
                                 System.IO.File.AppendAllText(fileFeet, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPos.x, screenPos.y, person.transform.parent.GetComponent<Group>().GroupID));
-
+                                    Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPos.x,
+                                    screenPos.y, person.transform.parent.GetComponent<Group>().GroupID));
                             }
                             else if (person.transform.parent.CompareTag(tagStationaryGroup))
                             {
                                 // Create just one world coordinate file
                                 if (i == 0)
                                 {
-                                    System.IO.File.AppendAllText(fileWorld, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID,
-                                   targetCam.position.x, targetCam.position.y, targetCam.position.z,
-                                   head.position.x, head.position.y, head.position.z,
-                                   person.transform.parent.GetComponent<Group>().GroupID));
+                                    System.IO.File.AppendAllText(fileWorld, string.Format(
+                                        "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n",
+                                        Time.frameCount + 15, person.GetComponent<Person>().PersonID,
+                                        targetCam.position.x, targetCam.position.y, targetCam.position.z,
+                                        head.position.x, head.position.y, head.position.z,
+                                        person.transform.parent.GetComponent<Group>().GroupID));
                                 }
+
                                 //UNCOMMENT HERE
                                 System.IO.File.AppendAllText(fileHead, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPosHead.x, screenPosHead.y, person.transform.parent.GetComponent<Group>().GroupID));
+                                    Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPosHead.x,
+                                    screenPosHead.y, person.transform.parent.GetComponent<Group>().GroupID));
                                 System.IO.File.AppendAllText(fileFeet, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPos.x, screenPos.y, person.transform.parent.GetComponent<Group>().GroupID));
-
-        }
+                                    Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPos.x,
+                                    screenPos.y, person.transform.parent.GetComponent<Group>().GroupID));
+                            }
                             else
                             {
                                 // Create just one world coordinate file
                                 if (i == 0)
                                 {
-                                    System.IO.File.AppendAllText(fileWorld, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID,
-                                   targetCam.position.x, targetCam.position.y, targetCam.position.z,
-                                   head.position.x, head.position.y, head.position.z,
-                                   "0"));
+                                    System.IO.File.AppendAllText(fileWorld, string.Format(
+                                        "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n",
+                                        Time.frameCount + 15, person.GetComponent<Person>().PersonID,
+                                        targetCam.position.x, targetCam.position.y, targetCam.position.z,
+                                        head.position.x, head.position.y, head.position.z,
+                                        "0"));
                                 }
+
                                 //UNCOMMENT HERE
                                 System.IO.File.AppendAllText(fileHead, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPosHead.x, screenPosHead.y, "0"));
+                                    Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPosHead.x,
+                                    screenPosHead.y, "0"));
                                 System.IO.File.AppendAllText(fileFeet, string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
-                                   Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPos.x, screenPos.y, "0"));
-
+                                    Time.frameCount + 15, person.GetComponent<Person>().PersonID, screenPos.x,
+                                    screenPos.y, "0"));
                             }
                         }
                     }
@@ -272,17 +289,19 @@ public class CamerasManager : MonoBehaviour
             {
                 o.SetActive(true);
             }
+
             Debug.Log("STARTED");
         }
-        else if (init && limitTrajectories && PersonCollection.Instance.People.Exists(x => x.name.Contains(maxTrajectories.ToString())))
+        else if (init && limitTrajectories &&
+                 PersonCollection.Instance.People.Exists(x => x.name.Contains(maxTrajectories.ToString())))
         {
             Debug.Log("DONE");
             string results =
                 $"α={_gridcontroller.alfa} GCM avg: {(PseudoAcademy.Instance.TotalGCM / _gridcontroller.currentTime)} PCM avg: {PseudoAcademy.Instance.TotalPCM / _gridcontroller.currentTime}";
             Debug.Log(results);
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             EditorApplication.isPlaying = false;
-            #endif
+#endif
         }
     }
 
@@ -294,6 +313,7 @@ public class CamerasManager : MonoBehaviour
             obj = obj.transform.parent.gameObject;
             path = "/" + obj.name + path;
         }
+
         return path;
     }
 }

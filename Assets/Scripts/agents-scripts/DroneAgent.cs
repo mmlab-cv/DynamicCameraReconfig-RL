@@ -188,56 +188,15 @@ public class DroneAgent : Agent
         float gridSize = grid.GetLength(0) * grid.GetLength(1);
         if (_gridController.alfa < 1)
         {
-            float gcm_t = _gridController.GlobalCoverageMetric_Current();
+            float priority_t = _gridController.Priority_Current();
             _ccfov.Project();
-            _gridController.UpdateGCMValues(true);
-            float gcm_t1 = _gridController.GlobalCoverageMetric_Current();
-            float genReward = 1f / (maxSteps + gridSize);
-            if (PseudoAcademy.Instance.logRewards)
-                Debug.Log("Delta GCM: " + (gcm_t1 - gcm_t));
-            AddReward(gcm_t1 - gcm_t);
-            // if (gcm_t1-gcm_t < 0)//grid[xCoord + x, yCoord + y].value > 0)//drone si sposta su una cella verde
-            //     AddReward(-genReward);
-            // else if (gcm_t1 - gcm_t > 0) //grid[xCoord + x, yCoord + y].value < 0.1)//drone si sposta su una cella rossa
-            //     AddReward(genReward);
-            // else if (gcm_t1-gcm_t == 0)
-            //     AddReward(-genReward/2f);
-            // if (PseudoAcademy.Instance.currentDecisions > gridSize)
-            //     AddReward(-genReward);
-
-            if (Math.Abs(gcm_t1 - 1) < 0.01f)
-            {
-                // AddReward(1 - genReward * gridSize);
-                Done();
-            }
-        }
-        else
-        {
-            _ccfov.Project();
-            var pos = new Tuple<int, int>(xCoord + x, yCoord + y);
-            if (_ccfov.personHit.Count > 0 && !PseudoAcademy.Instance.seenPeoplePositions.Contains(pos))
-            {
-                for (int i = 0; i < _ccfov.personHit.Count; i++)
-                {
-                    PseudoAcademy.Instance.seenPeoplePositions.Add(pos);
-                    AddReward(1f / PersonCollection.Instance.People.Count);
-                }
-            }
-            else
-            {
-                AddReward(-1f / PseudoAcademy.Instance.maxDecisions);
-            }
+            _gridController.UpdateGCMValues();
+            float priority_t1 = _gridController.Priority_Current();
+            AddReward(priority_t1 - priority_t);
         }
 
-
-        _gridController.UpdateGCMValues(true); //We force the update of the values 
-
-
-        if (PseudoAcademy.Instance.logRewards)
-            Debug.Log("Agent " + name + " step " + PseudoAcademy.Instance.currentDecisions + ": Reward " +
-                      GetCumulativeReward() + "\nGCM: " +
-                      _gridController.GlobalCoverageMetric_Current());
-
+        _gridController.UpdateGCMValues(); //We force the update of the values 
+        
         PseudoAcademy.Instance.SendAction(this);
     }
 
