@@ -25,8 +25,7 @@ public class GridController : MonoBehaviour
         timeConfidenceGridNewObs,
         lastObsGrid,
         observationGridNewObs,
-        priorityGrid,
-        priorityGrid_prec;
+        priorityGrid;
 
     [HideInInspector] public Texture2D observationTexture,
         timeConfidenceTexture,
@@ -38,8 +37,7 @@ public class GridController : MonoBehaviour
         timeConfidenceTextureNewObs,
         lastObsTexture,
         observationTextureNewObs,
-        priorityTexture,
-        priorityTexture_prec;
+        priorityTexture;
 
     public float cellWidth = 1f, cellDepth = 1f;
 
@@ -259,21 +257,38 @@ public class GridController : MonoBehaviour
         return gcm_curr;
     }
     
+    public float PCM_CURR()
+    {
+        float conf = 0;
+        float totalPeop = 0;
+        List<Vector3> gp = new List<Vector3>();
+        foreach (GameObject child in PersonCollection.Instance.People)
+            if (mapVolume.Contains(child.transform.position))
+            {
+                totalPeop++;
+                gp.Add(map.ClosestPoint(child.transform.position));
+            }
+
+        if (totalPeop > 0)
+        {
+            foreach (Vector3 pos in gp)
+                for (int i = 0; i < numberOfCellsWidth; i++)
+                for (int j = 0; j < numberOfCellsDepth; j++)
+                    if (observationGrid[i, j].Contains(pos))
+                        conf += overralConfidenceGrid[i, j].value;
+
+            return conf / totalPeop;
+        }
+
+        return 0;
+    }
+    
     public float Priority_Current()
     {
-        float curr = 0f;
-        float conf = 0;
-        for (int i = 0; i < numberOfCellsWidth; i++)
-        {
-            for (int j = 0; j < numberOfCellsDepth; j++)
-            {
-                conf += priorityGrid[i, j].value;
-            }
-        }
-        return (conf / (float) (numberOfCellsWidth * numberOfCellsDepth));
+        return  (1 - alfa) * GCM / 100f;
     }
 
-    public float PeopleCoverageMetric()
+    public void PeopleCoverageMetric()
     {
         var peop = PersonCollection.Instance.People;
         int conf = 0;
@@ -293,18 +308,10 @@ public class GridController : MonoBehaviour
         if (totalPeople.Count != 0)
         {
             foreach (Vector3 pos in groundProjections)
-            {
                 for (int i = 0; i < numberOfCellsWidth; i++)
-                {
-                    for (int j = 0; j < numberOfCellsDepth; j++)
-                    {
+                for (int j = 0; j < numberOfCellsDepth; j++)
                         if (observationGrid[i, j].Contains(pos) && overralConfidenceGrid[i, j].value > peopleThreshold)
-                        {
                             conf += 1;
-                        }
-                    }
-                }
-            }
 
             //Debug.Log ("tot people count =" + totalPeople.Count);
             peopleHistory = peopleHistory + totalPeople.Count;
@@ -314,8 +321,6 @@ public class GridController : MonoBehaviour
             peopleTimeCount += 1;
             if (logMetrics) Debug.Log("PCM = " + PCM);
         }
-
-        return PCM;
     }
 
 
@@ -349,6 +354,7 @@ public class GridController : MonoBehaviour
                 timeConfidenceGridNewObs[i, j].SetValue(0);
                 lastObsGrid[i, j].SetValue(-t_max);
                 observationGridNewObs[i, j].SetValue(0);
+                priorityGrid[i,j].SetValue(0);
             }
         }
 
@@ -382,8 +388,6 @@ public class GridController : MonoBehaviour
             ref overralConfidenceTextureTime, "Overall Confidence Grid Time");
         InitializeGrid(ref priorityGrid, plotMaps, new Vector2(-2f, 0f),
             ref priorityTexture, "Priority");
-        InitializeGrid(ref priorityGrid_prec, plotMaps, new Vector2(-3f, 0f),
-            ref priorityTexture_prec, "Priority -1");
         InitializeGrid(ref lastObsGrid, false, new Vector2(0f, 0f),
             ref lastObsTexture, "Last Observation");
         //GenerateCameras()
@@ -439,15 +443,13 @@ public class GridController : MonoBehaviour
                     overralConfidenceGrid[i, j].SetValue(overralConfidenceGridTime[i, j].value);
                     //Debug.Log("HEREEEEEE: Time");
                 }
-
-                priorityGrid_prec[i, j].SetValue(priorityGrid[i, j].value);
+                
                 priorityGrid[i, j].SetValue(alfa * observationGrid[i, j].value +
                                             (1 - alfa) * (1 - overralConfidenceGrid[i, j].value));
 
                 if (plotMaps)
                 {
                     priorityGrid[i, j].UpdateColorPriority();
-
                     observationGrid[i, j].UpdateColor();
                     timeConfidenceGrid[i, j].UpdateColor();
                     spatialConfidenceGrid[i, j].UpdateColor();
@@ -468,6 +470,7 @@ public class GridController : MonoBehaviour
         {
             observationTexture.Apply();
             overralConfidenceTextureNewObs.Apply();
+            observationTextureNewObs.Apply();
             timeConfidenceTexture.Apply();
             timeConfidenceTextureNewObs.Apply();
             spatialConfidenceTexture.Apply();

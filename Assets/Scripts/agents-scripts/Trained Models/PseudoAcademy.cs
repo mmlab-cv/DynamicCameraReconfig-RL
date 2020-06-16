@@ -45,12 +45,14 @@ public class PseudoAcademy : MonoBehaviour
     public int minPeopleToSpawn, maxPeopleToSpawn;
     public bool shouldPeopleStandStill;
     [FormerlySerializedAs("seenPeoplePos")] public List<Tuple<int, int>> seenPeoplePositions;
+    public bool isDebugging;
+    public Material visualObsDebug;
 
     public void Awake()
     {
         Instance = this;
         isTraining = !inferenceModel;
-        if (isTraining)
+        if (isTraining || isDebugging)
             CustomAwake();
     }
     public void CustomAwake()
@@ -139,7 +141,7 @@ public class PseudoAcademy : MonoBehaviour
         seenPeoplePositions.Clear();
         if (isTraining)
         {
-            gridController.t_max = Int32.MaxValue;
+            // gridController.t_max = Int32.MaxValue;
             // gridController.alfa = Random.Range(0f, 1f);
             PersonCollection.Instance.KillThemAll();
         }
@@ -150,7 +152,8 @@ public class PseudoAcademy : MonoBehaviour
             droneAgent.Done();
         for (int i = 0; i < _droneAction.Length; ++i)
             _droneAction[i] = false;
-        for (int i = 0; i < Random.Range(minPeopleToSpawn, maxPeopleToSpawn); i++)
-            SpawnHuman();
+        if(isTraining)
+            for (int i = 0; i < Random.Range(minPeopleToSpawn, maxPeopleToSpawn); i++)
+                SpawnHuman();
     }
 }

@@ -36,7 +36,7 @@ Drone:
     max_steps: 10.0e6
     tau: 0.01
     summary_freq: 1000
-    time_horizon: 50
+    time_horizon: 3
     reward_signals:
         extrinsic:
             strength: 1.0

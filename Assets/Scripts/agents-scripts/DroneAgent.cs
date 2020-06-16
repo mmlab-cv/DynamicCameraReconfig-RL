@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using Geometry;
 using MLAgents;
 using MLAgents.Sensor;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -64,14 +65,14 @@ public class DroneAgent : Agent
 
     (int, int) GetRelativeWindowLocationFromActions(float[] act)
     {
-        int x = (int) (1 + Mathf.Clamp(act[0], -1, 1)) * VisionSize;
-        int y = (int) (1 + Mathf.Clamp(act[1], -1, 1)) * VisionSize;
+        int x = (int) (Mathf.Clamp(act[0], -1, 1) * VisionSize/2);
+        int y = (int) (Mathf.Clamp(act[1], -1, 1) * VisionSize/2);
         return (x, y);
     }
 
     (int, int) RelativeToAbsolute(int abs_x, int abs_y, int x, int y)
     {
-        return (x + abs_x - VisionSize / 2, y + abs_y - VisionSize / 2);
+        return (abs_x + x, y + abs_y);
     }
 
     public override float[] Heuristic()
@@ -97,20 +98,24 @@ public class DroneAgent : Agent
             tex = _gridController.priorityTexture;
         }
 
-        for (int i = x_coord - 1; i <= x_coord + 1; i++)
-        for (int j = y_coord - 1; j <= y_coord + 1; j++)
+        for (int i = x_coord - VisionSize/2; i <= x_coord + VisionSize/2; i++)
+        for (int j = y_coord - VisionSize/2; j <= y_coord + VisionSize/2; j++)
             if (i >= 0 && j >= 0 && i < grid.GetLength(0) &&
                 j < grid.GetLength(0))
-                grid[i, j].UpdateColor();
+                if (PseudoAcademy.Instance.observationTexture == PseudoAcademy.TextureToTrain.OverallConfidence)
+                    grid[i, j].UpdateColor();
+                else
+                    grid[i,j].UpdateColorPriority(); 
         Texture2D texToUpdate = new Texture2D(VisionSize, VisionSize);
         for (int i = 0; i < VisionSize; i++)
         {
             for (int j = 0; j < VisionSize; j++)
             {
-                (int x, int y) = RelativeToAbsolute(x_coord, y_coord, i, j);
-                if (x == x_coord && y == y_coord)
-                    texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
-                else if (x < 0 || y < 0 || x >= grid.GetLength(0) || y >= grid.GetLength(1))
+                (int x, int y) = RelativeToAbsolute(x_coord, y_coord, i-VisionSize/2, j-VisionSize/2);
+                // if (x == x_coord && y == y_coord)
+                //     texToUpdate.SetPixel(x_coord, y_coord, Color.yellow);
+                // else
+                if (x < 0 || y < 0 || x >= grid.GetLength(0) || y >= grid.GetLength(1))
                     texToUpdate.SetPixel(i, j, Color.green);
                 else
                     texToUpdate.SetPixel(i, j, tex.GetPixel(x, y));
@@ -135,6 +140,10 @@ public class DroneAgent : Agent
         texToUpdate.filterMode = FilterMode.Point;
         texToUpdate.wrapMode = TextureWrapMode.Clamp;
         Graphics.Blit(texToUpdate, rtsc.renderTexture);
+        #if UNITY_EDITOR
+        if (PseudoAcademy.Instance.isDebugging && PseudoAcademy.Instance.visualObsDebug)
+            PseudoAcademy.Instance.visualObsDebug.mainTexture = rtsc.renderTexture;
+        #endif
         Destroy(texToUpdate);
     }
 
@@ -158,10 +167,14 @@ public class DroneAgent : Agent
         }
     }
 
+    // public float XXX, YYY;
     public override void AgentAction(float[] vectorAction)
     {
+        // vectorAction = new[] {XXX, YYY};
         (int x, int y) = GetRelativeWindowLocationFromActions(vectorAction);
+        // Debug.Log("x:"+x+" y:"+y);
         (int xCoord, int yCoord) = GetCoords();
+        // Debug.Log("xCoord:"+xCoord+" yCoord:"+yCoord);
         Cell[,] grid;
         if (PseudoAcademy.Instance.observationTexture == PseudoAcademy.TextureToTrain.OverallConfidence)
             grid = _gridController.overralConfidenceGrid;
@@ -171,6 +184,8 @@ public class DroneAgent : Agent
         (int final_x, int final_y) = RelativeToAbsolute(xCoord, yCoord, x, y);
         final_x = (int) Math.Max(Math.Min(final_x, grid.GetLength(0) - 1), 0);
         final_y = (int) Math.Max(Math.Min(final_y, grid.GetLength(1) - 1), 0);
+        // Debug.Log("finalx:"+final_x+" finalY:"+final_y);
+
         if (PseudoAcademy.Instance.isTraining)
             _drone.transform.position = new Vector3(
                 _gridController.timeConfidenceGrid[final_x, final_y].GetPosition().x,
@@ -186,17 +201,41 @@ public class DroneAgent : Agent
 
         float maxSteps = PseudoAcademy.Instance.minimumGoodDecisions + 1f;
         float gridSize = grid.GetLength(0) * grid.GetLength(1);
-        if (_gridController.alfa < 1)
-        {
-            float priority_t = _gridController.Priority_Current();
-            _ccfov.Project();
-            _gridController.UpdateGCMValues();
-            float priority_t1 = _gridController.Priority_Current();
-            AddReward(priority_t1 - priority_t);
-        }
+        float priority_t = _gridController.Priority_Current();
+        float pcm_t = _gridController.PCM_CURR();
+        _ccfov.Project();
+        _gridController.UpdateGCMValues();
+        float priority_t1 = _gridController.Priority_Current();
+        float deltaPCM = _gridController.PCM_CURR()-pcm_t;
+
+
+        // EditorApplication.isPaused = true;
+        //DeltaGCM + alpha
+        float reward_pcm = 0;
+        if (deltaPCM>0)
+            reward_pcm = (_gridController.PCM_CURR());
+        else if (deltaPCM<0)
+            reward_pcm = (-Mathf.Sqrt(1+Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1]))/50f);
+        else if (deltaPCM==0 && (Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1])) != 0)
+            reward_pcm = (-Mathf.Sqrt(1+Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1]))/50f);
+        else if (deltaPCM==0 && _gridController.PCM_CURR() >= 0 && (Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1])) == 0)
+            // if (_gridController.PCM_CURR() == 0)
+            //     reward_pcm = 0.005f;
+            // else
+                reward_pcm = (_gridController.PCM_CURR());
+        
+        //provare con time_horizon=1
+        
+#if UNITY_EDITOR
+        if (PseudoAcademy.Instance.logRewards)
+            // Debug.Log($"Delta={((priority_t1 - priority_t) / 100f)} curr={priority_t1}");
+            Debug.Log($"x:{vectorAction[0]}, y:{vectorAction[1]} Reward{reward_pcm}");
+#endif
+        AddReward(((priority_t1 - priority_t) ) + _gridController.alfa * reward_pcm);
+
 
         _gridController.UpdateGCMValues(); //We force the update of the values 
-        
+
         PseudoAcademy.Instance.SendAction(this);
     }
 
@@ -209,10 +248,17 @@ public class DroneAgent : Agent
     private float movementForwardSpeedMission = 20;
     private bool mission = false;
 
+    [SerializeField] private bool nextStep;
+
     private void WaitTimeInference()
     {
         if (PseudoAcademy.Instance.isTraining)
         {
+#if UNITY_EDITOR
+            if (!nextStep)
+                return;
+            nextStep = false;
+#endif
             if (PseudoAcademy.Instance.CanDecide(this))
                 RequestDecision();
         }
@@ -237,7 +283,7 @@ public class DroneAgent : Agent
                 _drone.transform.position = Vector3.MoveTowards(_drone.transform.position, nextPosition,
                     movementForwardSpeedMission * Time.fixedDeltaTime);
                 var dist = Vector3.Distance(_drone.transform.position, nextPosition);
-                if (dist == 0)
+                if (Math.Abs(dist) < 0.01f)
                 {
                     mission = false;
                 }

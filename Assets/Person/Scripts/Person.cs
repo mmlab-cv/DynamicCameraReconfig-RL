@@ -148,7 +148,7 @@ public class Person : MonoBehaviour
         /*******************************
          * FORZA DI GRUPPO STAZIONARIO *
          *******************************/
-        if (transform.parent.CompareTag(tagStationaryGroup))
+        if (transform.parent && transform.parent.CompareTag(tagStationaryGroup))
         {
             totalForce -= (walkingVector * stationaryForce);
         }
@@ -184,7 +184,7 @@ public class Person : MonoBehaviour
                 /**********************************************
                  * SE LA PERSONA FA PARTE DELLO STESSO GRUPPO *
                  **********************************************/
-                if ((transform.parent.tag.Equals(tagGroup) || transform.parent.tag.Equals(tagStationaryGroup)) && (isInTheSameGroup(person.transform)))
+                if (transform.parent && (transform.parent.CompareTag(tagGroup) || transform.parent.CompareTag(tagStationaryGroup)) && (isInTheSameGroup(person.transform)))
                 {
                     if (distance <= d2 && distance > d1)
                     {
@@ -658,7 +658,7 @@ public class Person : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (transform.parent.CompareTag(tagStationaryGroup))
+        if (transform.parent && transform.parent.CompareTag(tagStationaryGroup))
         {
             Vector3 v1 = (transform.forward - transform.right) / 2 + transform.position;
             Vector3 v2 = (transform.forward + transform.right) / 2 + transform.position;
