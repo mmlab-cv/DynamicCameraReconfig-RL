@@ -282,6 +282,31 @@ public class GridController : MonoBehaviour
 
         return 0;
     }
+    public float PCM_CURR_FROM(int x, int y)
+    {
+        float conf = 0;
+        float totalPeop = 0;
+        List<Vector3> gp = new List<Vector3>();
+        foreach (GameObject child in PersonCollection.Instance.People)
+            if (mapVolume.Contains(child.transform.position))
+            {
+                totalPeop++;
+                gp.Add(map.ClosestPoint(child.transform.position));
+            }
+
+        if (totalPeop > 0)
+        {
+            foreach (Vector3 pos in gp)
+                for (int i = 0; i < numberOfCellsWidth; i++)
+                for (int j = 0; j < numberOfCellsDepth; j++)
+                    if (observationGrid[i, j].Contains(pos))
+                        conf += 1/(1+Mathf.Sqrt(Mathf.Pow(i + x, 2) + Mathf.Pow(j + y, 2)));
+
+            return conf / totalPeop;
+        }
+
+        return 0;
+    }
     
     public float Priority_Current()
     {

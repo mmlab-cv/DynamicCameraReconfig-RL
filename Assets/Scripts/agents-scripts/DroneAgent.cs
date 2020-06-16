@@ -213,16 +213,13 @@ public class DroneAgent : Agent
         //DeltaGCM + alpha
         float reward_pcm = 0;
         if (deltaPCM>0)
-            reward_pcm = (_gridController.PCM_CURR());
+            reward_pcm = (_gridController.PCM_CURR_FROM(final_x, final_y));
         else if (deltaPCM<0)
             reward_pcm = (-Mathf.Sqrt(1+Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1]))/50f);
         else if (deltaPCM==0 && (Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1])) != 0)
             reward_pcm = (-Mathf.Sqrt(1+Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1]))/50f);
         else if (deltaPCM==0 && _gridController.PCM_CURR() >= 0 && (Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1])) == 0)
-            // if (_gridController.PCM_CURR() == 0)
-            //     reward_pcm = 0.005f;
-            // else
-                reward_pcm = (_gridController.PCM_CURR());
+            reward_pcm = (_gridController.PCM_CURR_FROM(final_x, final_y)*10);
         
         //provare con time_horizon=1
         
