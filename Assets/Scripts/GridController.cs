@@ -256,26 +256,35 @@ public class GridController : MonoBehaviour
             ); //(GCM + conf / numberOfCellsWidth * numberOfCellsDepth)/(currentTime + 1);
         return gcm_curr;
     }
+
+    public List<Vector3> GetMapPeople()
+    {
+        List<Vector3> gp =new List<Vector3>();
+        foreach (GameObject child in PersonCollection.Instance.People)
+            if (mapVolume.Contains(child.transform.position))
+            {
+                gp.Add(map.ClosestPoint(child.transform.position));
+            }
+
+        return gp;
+    }
     
     public float PCM_CURR()
     {
         float conf = 0;
-        float totalPeop = 0;
-        List<Vector3> gp = new List<Vector3>();
-        foreach (GameObject child in PersonCollection.Instance.People)
-            if (mapVolume.Contains(child.transform.position))
-            {
-                totalPeop++;
-                gp.Add(map.ClosestPoint(child.transform.position));
-            }
+        List<Vector3> gp = GetMapPeople();
+        float totalPeop = gp.Count;
 
         if (totalPeop > 0)
         {
             foreach (Vector3 pos in gp)
                 for (int i = 0; i < numberOfCellsWidth; i++)
                 for (int j = 0; j < numberOfCellsDepth; j++)
-                    if (observationGrid[i, j].Contains(pos))
+                    if (observationGrid[i, j].Contains(pos)){
                         conf += overralConfidenceGrid[i, j].value;
+												i = numberOfCellsWidth;
+												j = numberOfCellsDepth;
+										}
 
             return conf / totalPeop;
         }
@@ -285,22 +294,19 @@ public class GridController : MonoBehaviour
     public float PCM_CURR_FROM(int x, int y)
     {
         float conf = 0;
-        float totalPeop = 0;
-        List<Vector3> gp = new List<Vector3>();
-        foreach (GameObject child in PersonCollection.Instance.People)
-            if (mapVolume.Contains(child.transform.position))
-            {
-                totalPeop++;
-                gp.Add(map.ClosestPoint(child.transform.position));
-            }
+        List<Vector3> gp = GetMapPeople();
+        float totalPeop = gp.Count;
 
         if (totalPeop > 0)
         {
             foreach (Vector3 pos in gp)
                 for (int i = 0; i < numberOfCellsWidth; i++)
                 for (int j = 0; j < numberOfCellsDepth; j++)
-                    if (observationGrid[i, j].Contains(pos))
-                        conf += 1/(1+Mathf.Sqrt(Mathf.Pow(i + x, 2) + Mathf.Pow(j + y, 2)));
+                    if (observationGrid[i, j].Contains(pos)){
+                        conf += overralConfidenceGrid[i, j].value/(1+(Mathf.Sqrt(Mathf.Pow(i + x, 2) + Mathf.Pow(j + y, 2)))/10);
+												i = numberOfCellsWidth;
+												j = numberOfCellsDepth;
+										}
 
             return conf / totalPeop;
         }
@@ -335,8 +341,11 @@ public class GridController : MonoBehaviour
             foreach (Vector3 pos in groundProjections)
                 for (int i = 0; i < numberOfCellsWidth; i++)
                 for (int j = 0; j < numberOfCellsDepth; j++)
-                        if (observationGrid[i, j].Contains(pos) && overralConfidenceGrid[i, j].value > peopleThreshold)
+                        if (observationGrid[i, j].Contains(pos) && overralConfidenceGrid[i, j].value > peopleThreshold){
                             conf += 1;
+														i = numberOfCellsWidth;
+														j = numberOfCellsDepth;
+												}
 
             //Debug.Log ("tot people count =" + totalPeople.Count);
             peopleHistory = peopleHistory + totalPeople.Count;

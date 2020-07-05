@@ -198,37 +198,20 @@ public class DroneAgent : Agent
             PseudoAcademy.Instance.SendAction(this);
             return;
         }
-
-        float maxSteps = PseudoAcademy.Instance.minimumGoodDecisions + 1f;
-        float gridSize = grid.GetLength(0) * grid.GetLength(1);
-        float priority_t = _gridController.Priority_Current();
-        float pcm_t = _gridController.PCM_CURR();
+        
+        float gcm_t = _gridController.Priority_Current();
         _ccfov.Project();
         _gridController.UpdateGCMValues();
-        float priority_t1 = _gridController.Priority_Current();
-        float deltaPCM = _gridController.PCM_CURR()-pcm_t;
+        float gcm_t1 = _gridController.Priority_Current(); // already with alpha
+        float pcm_t1 = _gridController.PCM_CURR();
 
-
-        // EditorApplication.isPaused = true;
-        //DeltaGCM + alpha
-        float reward_pcm = 0;
-        if (deltaPCM>0)
-            reward_pcm = (_gridController.PCM_CURR_FROM(final_x, final_y));
-        else if (deltaPCM<0)
-            reward_pcm = (-Mathf.Sqrt(1+Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1]))/50f);
-        else if (deltaPCM==0 && (Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1])) != 0)
-            reward_pcm = (-Mathf.Sqrt(1+Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1]))/50f);
-        else if (deltaPCM==0 && _gridController.PCM_CURR() >= 0 && (Mathf.Abs(vectorAction[0])+Mathf.Abs(vectorAction[1])) == 0)
-            reward_pcm = (_gridController.PCM_CURR_FROM(final_x, final_y)*10);
-        
-        //provare con time_horizon=1
-        
 #if UNITY_EDITOR
         if (PseudoAcademy.Instance.logRewards)
-            // Debug.Log($"Delta={((priority_t1 - priority_t) / 100f)} curr={priority_t1}");
-            Debug.Log($"x:{vectorAction[0]}, y:{vectorAction[1]} Reward{reward_pcm}");
+        {
+            Debug.Log($"x:{vectorAction[0]}, y:{vectorAction[1]} Reward{((gcm_t1 - gcm_t)) + _gridController.alfa * pcm_t1}");
+        }
 #endif
-        AddReward(((priority_t1 - priority_t) ) + _gridController.alfa * reward_pcm);
+        AddReward(((gcm_t1 - gcm_t)) + _gridController.alfa * pcm_t1);
 
 
         _gridController.UpdateGCMValues(); //We force the update of the values 

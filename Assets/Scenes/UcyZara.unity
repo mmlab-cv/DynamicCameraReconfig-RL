@@ -6825,7 +6825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTime: 0
-  t_max: 10
+  t_max: 45
   logMetrics: 0
   plotMaps: 1
   observationTexture: {fileID: 0}
@@ -6839,8 +6839,8 @@ MonoBehaviour:
   lastObsTexture: {fileID: 0}
   observationTextureNewObs: {fileID: 0}
   priorityTexture: {fileID: 0}
-  cellWidth: 3
-  cellDepth: 3
+  cellWidth: 1
+  cellDepth: 1
   ped_max: 2
   alfa: 1
   spatialThreshold: 0.2

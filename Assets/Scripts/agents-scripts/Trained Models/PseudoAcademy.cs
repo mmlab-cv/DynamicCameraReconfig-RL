@@ -36,7 +36,7 @@ public class PseudoAcademy : MonoBehaviour
     [Tooltip("You should not change this")]
     public int currentDecisions = 0;
     [HideInInspector] public bool isTraining;
-    [SerializeField] private NNModel inferenceModel;
+    public NNModel inferenceModel;
     public bool resetAllAtInferece;
     public bool logRewards;
 
@@ -63,6 +63,7 @@ public class PseudoAcademy : MonoBehaviour
         {
             DroneAgent drone = Instantiate(dronePrefab).GetComponent<DroneAgent>();
             drone.transform.position = new Vector3(Random.Range(-21f, 21f), 6.55f, Random.Range(-21f, 21f));
+            // drone.transform.position = new Vector3((-21f), 6.55f, (-21f));
             if (inferenceModel)
                 drone.GiveModel("Drone", inferenceModel);
             _droneAgents.Add(drone);
