@@ -13,5 +13,15 @@ The visula appearance of the crowd is generated using the [UMA library](https://
 
 ## Requirements
 
-1. [Unity 2017.4 LTS](https://unity3d.com/get-unity/download/archive?_ga=2.126095502.2059036969.1536495081-1535769236.1522161653)
+1. [Unity 2019.1.0f2](unityhub://2019.1.0f2/292b93d75a2c)
 
+
+
+
+
+### How to run RL-simulations
+
+1. Open scene `UcyZara`
+2. Choose alpha value in the `GridController`  component inside the `Map` GameObject
+3. Select the `Pseudo Academy` Object and assign the inference model to one of the available models in `Assets/Scripts/agents-scripts/Models from the paper`
+4. Press play

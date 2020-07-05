@@ -3714,7 +3714,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dronePrefab: {fileID: 2501227814951827164, guid: 78614221b4c86469c8c92a33915d6b87,
     type: 3}
-  dronesToSpawn: 1
+  dronesToSpawn: 2
   gridController: {fileID: 1700202836}
   observationTexture: 1
   timeBetweenDecisionsAtInference: 0.25
